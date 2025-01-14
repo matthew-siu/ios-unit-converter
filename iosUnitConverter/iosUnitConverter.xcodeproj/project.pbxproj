@@ -65,9 +65,15 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Model/MeasureType.swift,
-				Model/UnitType.swift,
 			);
 			target = 14B32E702D2DD11C00E89370 /* iOSUnitConverterWidgetExtension */;
+		};
+		149F5FFB2D36D66600628355 /* Exceptions for "iOSUnitConverterWidget" folder in "iosUnitConverter" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				iOSUnitConverterWidgetControl.swift,
+			);
+			target = 14B32E3C2D2DCF3000E89370 /* iosUnitConverter */;
 		};
 		14B32E862D2DD11E00E89370 /* Exceptions for "iOSUnitConverterWidget" folder in "iOSUnitConverterWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
@@ -108,6 +114,7 @@
 		14B32E772D2DD11C00E89370 /* iOSUnitConverterWidget */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
+				149F5FFB2D36D66600628355 /* Exceptions for "iOSUnitConverterWidget" folder in "iosUnitConverter" target */,
 				14B32E862D2DD11E00E89370 /* Exceptions for "iOSUnitConverterWidget" folder in "iOSUnitConverterWidgetExtension" target */,
 			);
 			path = iOSUnitConverterWidget;
@@ -534,6 +541,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosUnitConverter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Unit Converter";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -576,6 +584,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosUnitConverter/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Unit Converter";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;

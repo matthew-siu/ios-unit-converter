@@ -9,10 +9,12 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @Environment(\.colorScheme) var colorScheme
     
     @State var measureRequest: String!
     
     let measurementTypes: [any MeasurementType] = [
+        Eggs(),
         Length(),
         Weight(),
         Volume(),
@@ -37,7 +39,7 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("Select a unit") // Title added here
-            .background(Color(hex: "EFFAFF").ignoresSafeArea())
+            .background(Color(.systemBackground).ignoresSafeArea())
             .toolbar {
                 //                ToolbarItem(placement: .navigationBarTrailing) {
                 //                    EditButton()
@@ -111,6 +113,13 @@ extension ContentView {
 }
 
 #Preview {
-    ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+    Group {
+        ContentView()
+            .environment(\.colorScheme, .light)
+        
+        ContentView()
+            .environment(\.colorScheme, .dark)
+    }
+//    ContentView()
+//        .modelContainer(for: Item.self, inMemory: true)
 }

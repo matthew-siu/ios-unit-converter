@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct CustomKeyboardView: View {
+    @Environment(\.colorScheme) var colorScheme
+    
     @Binding var text: String // Bind the text to update the input field
 
     var onDone: () -> Void // Closure to handle "Done" button
@@ -18,6 +20,21 @@ struct CustomKeyboardView: View {
         ["1", "2", "3", ""], // Done
         ["000", "0", ".", "Done"] // Extra row
     ]
+    
+    func backgroundColor(key: String) -> Color {
+        key == "Done" ? Color(hex: "FFDC23") :
+        key == "⌫" || key == "AC" ? Color(hex: "F0F0F5") :
+        Color(.systemBackground)
+    }
+    
+    func foregroundColor(key: String) -> Color {
+        key == "Done" || key == "⌫" || key == "AC" ? .black : .primary
+    }
+    
+    func borderColor(key: String) -> Color {
+        key == "Done" || key == "⌫" || key == "AC" ? Color(hex: "C6C6C8") :
+        colorScheme == .dark ? .primary : .clear
+    }
 
     var body: some View {
         VStack(spacing: 12) {
@@ -28,11 +45,16 @@ struct CustomKeyboardView: View {
                             handleKeyPress(key)
                         }) {
                             Text(key)
-                                .font(.title)
+                                .font(.title2)
+                                .bold()
                                 .frame(maxWidth: .infinity, maxHeight: 60)
-                                .background(key == "⌫" || key == "AC" || key == "Done" ? Color.blue : Color(hex: "FCFCFE"))
-                                .foregroundColor(key == "⌫" || key == "AC" || key == "Done" ? .white : .black)
+                                .background(backgroundColor(key: key))
+                                .foregroundColor(foregroundColor(key: key))
                                 .cornerRadius(8)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .stroke(borderColor(key: key), lineWidth: 1)
+                                )
                         }
                         .disabled(key.isEmpty) // Disable empty buttons
                     }

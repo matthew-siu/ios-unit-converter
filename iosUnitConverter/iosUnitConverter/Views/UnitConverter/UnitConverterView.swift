@@ -8,39 +8,17 @@
 import SwiftUI
 
 struct UnitConverterView: View {
-    @State var measurement: any MeasurementType
+    @Environment(\.colorScheme) var colorScheme
+    @StateObject var vm: UnitConverterViewModel
     
-    @State private var inputValue: String = ""
-    @State private var outputValue: String = "0"
-    @State private var selectedInputUnit: Dimension
-    @State private var selectedOutputUnit: Dimension
-    
-    let measurementTypes: [any MeasurementType] = [
-        Length(),
-        Weight(),
-        Volume(),
-        Temperature(),
-        Area(),
-        CookingMeasurement()
-    ]
-
     init(type: String){
-        if let matchingMeasurement = measurementTypes.first(where: { $0.name.lowercased() == type }) {
-            self.measurement = matchingMeasurement
-            _selectedInputUnit = State(initialValue: matchingMeasurement.units.first!)
-            _selectedOutputUnit = State(initialValue: matchingMeasurement.units.first!)
-        }else{
-            let tmpMeasure = Length()
-            self.measurement = tmpMeasure
-            _selectedInputUnit = State(initialValue: tmpMeasure.units.first!)
-            _selectedOutputUnit = State(initialValue: tmpMeasure.units.first!)
-        }
+//        self.vm = .init(type: type)
+        _vm = StateObject(wrappedValue: UnitConverterViewModel(type: type))
     }
     
-    init(measurement: any MeasurementType) {
-        self.measurement = measurement
-        _selectedInputUnit = State(initialValue: measurement.units.first!)
-        _selectedOutputUnit = State(initialValue: measurement.units.first!)
+    init(measurement: any MeasurementType){
+//        self.vm = .init(item: measurement)
+        _vm = StateObject(wrappedValue: UnitConverterViewModel(item: measurement))
     }
 
     var body: some View {
@@ -49,14 +27,14 @@ struct UnitConverterView: View {
                 VStack(spacing: 0) {
                     // Input Section
                     VStack(spacing: 8) {
-                        TextField("Enter value", text: $inputValue)
+                        TextField("Enter value", text: $vm.inputValue)
                             .keyboardType(.decimalPad)
-                            .onChange(of: inputValue) { oldValue, newValue in
+                            .onChange(of: vm.inputValue) { oldValue, newValue in
                                 // Restrict to numbers and decimal point
-                                inputValue = newValue.filter { $0.isNumber || $0 == "." }
+                                vm.inputValue = newValue.filter { $0.isNumber || $0 == "." }
                                 // Prevent multiple decimals
-                                if inputValue.components(separatedBy: ".").count > 2 {
-                                    inputValue = String(inputValue.dropLast())
+                                if vm.inputValue.components(separatedBy: ".").count > 2 {
+                                    vm.inputValue = String(vm.inputValue.dropLast())
                                 }
                                 calculateConversion()
                             }
@@ -77,17 +55,17 @@ struct UnitConverterView: View {
                             }
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
-                                ForEach(measurement.units, id: \.symbol) { unit in
+                                ForEach(vm.item.units, id: \.symbol) { unit in
                                     Button(action: {
-                                        selectedInputUnit = unit
+                                        vm.selectedInputUnit = unit
                                         calculateConversion()
                                     }) {
                                         Text(unit.symbol)
                                             .padding(8)
                                             .frame(minWidth: 36)
-                                            .background(selectedInputUnit == unit ? Color.blue : Color.gray.opacity(0.2))
+                                            .background(vm.selectedInputUnit == unit ? Color.blue : Color.gray.opacity(0.2))
                                             .cornerRadius(8)
-                                            .foregroundColor(selectedInputUnit == unit ? .white : .blue)
+                                            .foregroundColor(vm.selectedInputUnit == unit ? .white : .blue)
                                     }
                                 }
                             }
@@ -105,23 +83,26 @@ struct UnitConverterView: View {
                     
                     // Output Section
                     VStack(spacing: 8) {
-                        Text(outputValue)
+                        Text(vm.outputValue)
                             .font(.system(size: 36))
                             .foregroundColor(.orange)
                             .bold()
+                        
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack {
-                                ForEach(measurement.units, id: \.symbol) { unit in
-                                    Button(action: {
-                                        selectedOutputUnit = unit
-                                        calculateConversion()
-                                    }) {
-                                        Text(unit.symbol)
-                                            .padding(8)
-                                            .frame(minWidth: 36)
-                                            .background(selectedOutputUnit == unit ? Color.blue : Color.gray.opacity(0.2))
-                                            .cornerRadius(8)
-                                            .foregroundColor(selectedOutputUnit == unit ? .white : .blue)
+                                if vm.showOutputUnits{
+                                    ForEach(vm.item.units, id: \.symbol) { unit in
+                                        Button(action: {
+                                            vm.selectedOutputUnit = unit
+                                            calculateConversion()
+                                        }) {
+                                            Text(unit.symbol)
+                                                .padding(8)
+                                                .frame(minWidth: 36)
+                                                .background(vm.selectedOutputUnit == unit ? Color.blue : Color.gray.opacity(0.2))
+                                                .cornerRadius(8)
+                                                .foregroundColor(vm.selectedOutputUnit == unit ? .white : .blue)
+                                        }
                                     }
                                 }
                             }
@@ -137,35 +118,42 @@ struct UnitConverterView: View {
             
             Spacer()
             
-            CustomKeyboardView(text: $inputValue) {
+            CustomKeyboardView(text: $vm.inputValue) {
                 print("Press done")
             }
         }
-        .navigationTitle(measurement.name)
+        .navigationTitle(vm.item.name)
         .navigationBarTitleDisplayMode(.inline)
-        .background(Color(hex: "EFFAFF").ignoresSafeArea())
+        .background(Color(.systemBackground))
     }
 
     private func calculateConversion() {
-        guard let input = Double(inputValue) else {
-            outputValue = "0"
+        guard let input = Double(vm.inputValue) else {
+            vm.outputValue = "0"
             return
         }
-        let inputUnit = selectedInputUnit
-        let outputUnit = selectedOutputUnit
 
-        let inputMeasurement = Measurement(value: input, unit: inputUnit)
-        let convertedValue = inputMeasurement.converted(to: outputUnit).value
+        var convertedValue: Double = 0
+        if let measurement = vm.item as? Eggs{
+            let inputUnit = vm.selectedInputUnit as! UnitDozan
+            convertedValue = measurement.convert(value: input, from: inputUnit, to: inputUnit)
+        }else{
+            let inputUnit = vm.selectedInputUnit
+            let outputUnit = vm.selectedOutputUnit
+            let inputMeasurement = Measurement(value: input, unit: inputUnit)
+            convertedValue = inputMeasurement.converted(to: outputUnit).value
+        }
+        
 
         // Format the output: 2 decimal places for small numbers, fixed-point for others
         if convertedValue > 0.01 {
-            outputValue = String(format: "%.2f", convertedValue) // 2 decimal places
+            vm.outputValue = String(format: "%.2f", convertedValue) // 2 decimal places
         } else {
-            outputValue = String(format: "%.3g", convertedValue) // 3 significant figures
+            vm.outputValue = String(format: "%.3g", convertedValue) // 3 significant figures
         }
     }
 }
 
 #Preview {
-    UnitConverterView(measurement: Length())
+    UnitConverterView(measurement: Eggs())
 }

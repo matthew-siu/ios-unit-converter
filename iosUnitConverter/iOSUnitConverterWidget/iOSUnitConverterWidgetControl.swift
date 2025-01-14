@@ -32,32 +32,11 @@ struct iOSUnitConverterWidgetControl: ControlWidget {
         StaticControlConfiguration(kind: Self.kind) {
                 /// This one - based on the demo code - doesn't work on simulator or device
                 ControlWidgetButton(action: LaunchAppIntent()) {
-                    Label("Launch App", systemImage: "pencil.and.ruler")
+                    Label("Start Measure", systemImage: "pencil.and.ruler")
                 }
             }
-            .displayName("Launch App")
-            .description("A an example control that launches the parent app.")
-        
-//        StaticControlConfiguration(kind: kind){
-//            Link(destination: URL(string: urlString)!, label: {
-//                
-//                ZStack(alignment: .leading){
-//                    Color.clear
-//                    VStack(alignment: .leading, spacing: 0){
-//                        Image(systemName: imgName)
-//                            .foregroundStyle(.white)
-//                        Text(text)
-//                            .font(.system(size: 14).weight(.regular))
-//                            .foregroundStyle(.white)
-//                    }
-//                    .padding(10)
-//                }
-//            })
-//            .buttonStyle(.plain)
-//            .background(Color("p200").opacity(0.6))
-//            .cornerRadius(15)
-//            .frame(maxHeight: .infinity)
-//        }
+            .displayName("Start Measure")
+            .description("Start groceries and price match")
     }
 }
 
@@ -92,7 +71,7 @@ struct TimerConfiguration: ControlConfigurationIntent {
 struct StartTimerIntent: SetValueIntent {
     static let title: LocalizedStringResource = "Start a timer"
 
-    @Parameter(title: "Timer Name")
+    @Parameter(title: "Measure Type")
     var name: String
 
     @Parameter(title: "Timer is running")
@@ -105,25 +84,26 @@ struct StartTimerIntent: SetValueIntent {
     }
 
     func perform() async throws -> some IntentResult {
-        // Start the timer…
+        
         return .result()
     }
 }
 
-struct LaunchAppIntent: OpenIntent {
-    static var title: LocalizedStringResource = "Launch App"
-    @Parameter(title: "Target")
-    var target: LaunchAppEnum
-}
-
-enum LaunchAppEnum: String, AppEnum {
-    case timer
-    case history
-
-
-    static var typeDisplayRepresentation = TypeDisplayRepresentation("Productivity Timer's app screens")
-    static var caseDisplayRepresentations = [
-        LaunchAppEnum.timer : DisplayRepresentation("Timer"),
-        LaunchAppEnum.history : DisplayRepresentation("History")
-    ]
+@available(iOS 18.0, *)
+struct LaunchAppIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start Measure"
+    static var openAppWhenRun: Bool = true
+    
+    init() { }
+    
+    @MainActor
+    func perform() async throws -> some IntentResult & OpensIntent {
+        print("perform URL")
+        guard let url = URL(string: "pugskyiuc://") else{
+            print("Couldn't create URL")
+            fatalError("Couldn't create URL")
+        }
+        EnvironmentValues().openURL(url)
+        return .result(opensIntent: OpenURLIntent(url))
+    }
 }

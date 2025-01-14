@@ -12,10 +12,41 @@ protocol MeasurementType {
     var id: UUID { get }
     var name: String { get }
     var icon: String { get }
+    var defaultDollarSign: Bool { get }
     var deeplinkPath: String { get }
     var units: [UnitType] { get }
     func convert(value: Double, from: UnitType, to: UnitType) -> Double
     
+}
+
+class Eggs: MeasurementType{
+    typealias UnitType = UnitDozan
+    let id = UUID()
+    let name = "Egg"
+    let icon = "icon_egg"
+    let defaultDollarSign = true
+    let deeplinkPath = "converter/eggs"
+    let units: [UnitDozan] = [.halfDozan, .dozan, .onehalfDozan, .twoDozan, .twoHalfDozan]
+    
+    func convert(value: Double, from: UnitDozan, to: UnitDozan) -> Double {
+//        let inputMeasurement = Measurement(value: value, unit: from)
+//        return inputMeasurement.converted(to: to).value
+        let unitToBaseCoefficient = 1 / from.converter.value(fromBaseUnitValue: 1)
+        print("convert: \(value) / \(unitToBaseCoefficient)")
+        return value / unitToBaseCoefficient
+    }
+}
+
+class UnitDozan: Dimension {
+    static let halfDozan = UnitDozan(symbol: "6", converter: UnitConverterLinear(coefficient: 6))
+    static let dozan = UnitDozan(symbol: "12 (dozan)", converter: UnitConverterLinear(coefficient: 12))
+    static let onehalfDozan = UnitDozan(symbol: "18", converter: UnitConverterLinear(coefficient: 18))
+    static let twoDozan = UnitDozan(symbol: "24", converter: UnitConverterLinear(coefficient: 24))
+    static let twoHalfDozan = UnitDozan(symbol: "30", converter: UnitConverterLinear(coefficient: 30))
+
+    override class func baseUnit() -> Self {
+        return UnitDozan(symbol: "egg", converter: UnitConverterLinear(coefficient: 1)) as! Self
+    }
 }
 
 class Length: MeasurementType {
@@ -23,6 +54,7 @@ class Length: MeasurementType {
     let id = UUID()
     let name = "Length"
     let icon = "icon_length"
+    let defaultDollarSign = false
     let deeplinkPath = "converter/length"
     let units: [UnitLength] = [.millimeters, .centimeters, .meters, .kilometers, .inches, .feet, .miles]
 
@@ -37,6 +69,7 @@ class Weight: MeasurementType {
     let id = UUID()
     let name = "Weight"
     let icon = "icon_weight"
+    let defaultDollarSign = false
     let deeplinkPath = "converter/weight"
     let units: [UnitMass] = [.grams, .kilograms, .milligrams, .pounds, .ounces, .metricTons]
 
@@ -51,6 +84,7 @@ class Volume: MeasurementType {
     let id = UUID()
     let name = "Volume"
     let icon = "icon_volume"
+    let defaultDollarSign = false
     let deeplinkPath = "converter/volume"
     let units: [UnitVolume] = [.liters, .milliliters, .cubicMeters, .cubicCentimeters, .gallons, .quarts, .cubicInches, .cubicFeet]
 
@@ -65,6 +99,7 @@ class Temperature: MeasurementType {
     let id = UUID()
     let name = "Temperature"
     let icon = "icon_temperature"
+    let defaultDollarSign = false
     let deeplinkPath = "converter/temperature"
     let units: [UnitTemperature] = [.celsius, .fahrenheit]
 
@@ -79,6 +114,7 @@ class Area: MeasurementType {
     let id = UUID()
     let name = "Area"
     let icon = "icon_area"
+    let defaultDollarSign = false
     let deeplinkPath = "converter/area"
     let units: [UnitArea] = [.squareInches, .squareFeet, .squareMeters, .squareKilometers, .squareMiles]
 
@@ -93,6 +129,7 @@ class CookingMeasurement: MeasurementType {
     let id = UUID()
     let name = "Cooking Measurements"
     let icon = "icon_cooking"
+    let defaultDollarSign = false
     let deeplinkPath = "converter/cooking"
     let units: [UnitType] = [UnitConverter.custom(unitName: "Cup", multiplier: 240.0),
                              UnitConverter.custom(unitName: "Tablespoon", multiplier: 15.0),

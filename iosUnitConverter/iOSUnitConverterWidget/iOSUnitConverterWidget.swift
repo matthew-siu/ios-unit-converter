@@ -89,6 +89,10 @@ struct iOSUnitConverterWidget: Widget {
             iOSUnitConverterWidgetEntryView(entry: entry)
                 .containerBackground(.gray, for: .widget)
         }
+        .supportedFamilies([
+            .systemSmall, .systemMedium, .systemLarge,
+            .accessoryCircular, .accessoryRectangular, .accessoryInline
+        ])
     }
 }
 
