@@ -1,0 +1,29 @@
+{
+  "configurations" : [
+    {
+      "id" : "9C6E37A2-755F-486D-AD8B-8108FFE54984",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:iosUnitConverter.xcodeproj",
+      "identifier" : "14B32E3C2D2DCF3000E89370",
+      "name" : "iosUnitConverter"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:iosUnitConverter.xcodeproj",
+        "identifier" : "14B32E4F2D2DCF3200E89370",
+        "name" : "iosUnitConverterTests"
+      }
+    }
+  ],
+  "version" : 1
+}
