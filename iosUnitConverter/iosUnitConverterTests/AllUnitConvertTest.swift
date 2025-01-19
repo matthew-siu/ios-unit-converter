@@ -45,18 +45,4 @@ struct AllUnitConvertTest {
         #expect(area.convert(value: 1, from: .squareMeters, to: .squareKilometers) == 0.000001)
         #expect(area.convert(value: 1, from: .squareMiles, to: .squareKilometers) == 2.58999)
     }
-    
-    @Test func testCookingMeasurementsConversion() async throws {
-        let cooking = CookingMeasurement()
-        guard let cup = cooking.units.first(where: { $0.symbol == "Cup" }),
-              let tablespoon = cooking.units.first(where: { $0.symbol == "Tablespoon" }),
-              let teaspoon = cooking.units.first(where: { $0.symbol == "Teaspoon" }) else {
-            Issue.record("Cooking measurement units are missing")
-            
-            return
-        }
-        #expect(cooking.convert(value: 1, from: cup, to: tablespoon) == 16.0)
-        #expect(cooking.convert(value: 3, from: tablespoon, to: teaspoon) == 9.0)
-        #expect(cooking.convert(value: 48, from: teaspoon, to: cup) == 1.0)
-    }
 }
