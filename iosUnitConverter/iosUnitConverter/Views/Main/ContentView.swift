@@ -109,7 +109,7 @@ struct ContentView: View {
                                     Menu{
                                         Picker(selection: $vm.selectedOutputUnit) {
                                             ForEach(vm.selectedMeasurement.units, id: \.symbol) { unit in
-                                                Text(unit.symbol)
+                                                Text("\(unit.symbol) (\(unit.toFullUnit()))")
                                                     .tag(unit)
                                             }
                                         } label: {}
@@ -235,9 +235,7 @@ extension ContentView {
     private func selectMeasurement(new: MeasurementType) {
 //        self.vm.selectMeasurement(new: new)
         withAnimation {
-            vm.selectedMeasurement = new
-            vm.selectedInputUnit = new.units[0]
-            vm.selectedOutputUnit = new.units[1]
+            self.vm.selectMeasurement(new: new)
         }
     }
     

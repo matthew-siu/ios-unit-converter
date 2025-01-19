@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct SettingsView: View {
+    @Environment(\.requestReview) var requestReview
     @ObservedObject var viewModel = SettingsViewModel()
     
     var body: some View {
@@ -24,11 +26,7 @@ struct SettingsView: View {
                     }
                     
                     SettingsRow(title: "Rate Us", subtitle: "Show us some love!") {
-                        viewModel.rateUs()
-                    }
-                    
-                    SettingsRow(title: "Themes", subtitle: "Customize app appearance") {
-                        viewModel.customizeThemes()
+                        self.requestReview()
                     }
                 }
                 
@@ -52,16 +50,12 @@ struct SettingsView: View {
             .listStyle(InsetGroupedListStyle())
             
             // App Version
-            Text("Ver \(viewModel.appVersion)")
+            Text("v\(Utils.getVersion())")
                 .font(.footnote)
                 .foregroundColor(.gray)
                 .padding(.top, 10)
         }
         .navigationBarTitle("Menu", displayMode: .inline)
-        .navigationBarItems(trailing: Button("Done") {
-            // Logic to dismiss the view
-            print("Done tapped")
-        })
     }
 }
 

@@ -15,6 +15,14 @@ class MeasurementType {
     let deeplinkPath: String
     let units: [Dimension]
     
+    var defaultInput: Dimension{
+        return units[0]
+    }
+    
+    var defaultOutput: Dimension{
+        return units[1]
+    }
+    
     init(id: UUID = UUID(),
          name: String,
          icon: String,
@@ -44,6 +52,7 @@ class Eggs: MeasurementType {
             defaultDollarSign: true,
             deeplinkPath: "converter?type=eggs",
             units: [
+                UnitDozan.one,
                 UnitDozan.halfDozan,
                 UnitDozan.dozan,
                 UnitDozan.onehalfDozan,
@@ -53,9 +62,21 @@ class Eggs: MeasurementType {
         )
     }
     
+    override var defaultInput: Dimension{
+        return UnitDozan.dozan
+    }
+    
+    override var defaultOutput: Dimension{
+        return UnitDozan.onehalfDozan
+    }
+    
     override func convert(value: Double, from: Dimension, to: Dimension) -> Double {
-        let unitToBaseCoefficient = 1 / from.converter.value(fromBaseUnitValue: 1)
-        return value / unitToBaseCoefficient
+//        let unitToBaseCoefficient = 1 / from.converter.value(fromBaseUnitValue: to.)
+//        return value / unitToBaseCoefficient
+        let fromCoefficient = from.converter.baseUnitValue(fromValue: 1)
+        let toCoefficient = to.converter.baseUnitValue(fromValue: 1)
+            
+        return (value / fromCoefficient) * toCoefficient
     }
 }
 
@@ -81,6 +102,14 @@ class Length: MeasurementType {
 }
 
 class Weight: MeasurementType {
+    override var defaultInput: Dimension{
+        return UnitMass.kilograms
+    }
+    
+    override var defaultOutput: Dimension{
+        return UnitMass.pounds
+    }
+    
     init() {
         super.init(
             name: "Weight",
@@ -166,6 +195,7 @@ class Area: MeasurementType {
 
 
 class UnitDozan: Dimension {
+    static let one = UnitDozan(symbol: "1", converter: UnitConverterLinear(coefficient: 1))
     static let halfDozan = UnitDozan(symbol: "6", converter: UnitConverterLinear(coefficient: 6))
     static let dozan = UnitDozan(symbol: "12", converter: UnitConverterLinear(coefficient: 12))
     static let onehalfDozan = UnitDozan(symbol: "18", converter: UnitConverterLinear(coefficient: 18))
@@ -177,6 +207,7 @@ class UnitDozan: Dimension {
     }
     
     static let customLongUnitNames: [UnitDozan: String] = [
+        UnitDozan.one: "one unit",
         UnitDozan.halfDozan: "half dozen",
         UnitDozan.dozan: "one dozen",
         UnitDozan.onehalfDozan: "one and a half dozen",

@@ -30,19 +30,21 @@ class MainViewModel: ObservableObject{
     
     init() {
         selectedMeasurement = measurementTypes.first!
-        selectedInputUnit = measurementTypes.first!.units.first!
-        selectedOutputUnit = measurementTypes.first!.units.first!
+        selectedInputUnit = measurementTypes.first!.defaultInput
+        selectedOutputUnit = measurementTypes.first!.defaultOutput
+        
+        self.selectMeasurement(new: measurementTypes.first!)
     }
     
     func selectMeasurement(new: MeasurementType){
         selectedMeasurement = new
-        selectedInputUnit = new.units[0]
-        selectedOutputUnit = new.units[1]
+        selectedInputUnit = new.defaultInput
+        selectedOutputUnit = new.defaultOutput
     }
     
     func selectMeasurement(deeplink: String){
         if let type = measurementTypes.first(where: { $0.deeplinkPath == deeplink }){
-            selectedMeasurement = type
+            selectMeasurement(new: type)
             
         }else {
             print("Invalid Deeplink: \(deeplink)")
@@ -63,13 +65,13 @@ class MainViewModel: ObservableObject{
         }
 
         var convertedValue: Double = 0
-        if let measurement = selectedMeasurement as? Eggs{
-            convertedValue = measurement.convert(value: input, from: selectedInputUnit, to: selectedInputUnit)
-        }else{
+//        if let measurement = selectedMeasurement as? Eggs{
+//            convertedValue = measurement.convert(value: input, from: selectedInputUnit, to: selectedInputUnit)
+//        }else{
             let inputUnit = selectedInputUnit
             let outputUnit = selectedOutputUnit
             convertedValue = selectedMeasurement.convert(value: input, from: inputUnit, to: outputUnit)
-        }
+//        }
 
         // Format the output: 2 decimal places for small numbers, fixed-point for others
         if convertedValue > 0.01 {

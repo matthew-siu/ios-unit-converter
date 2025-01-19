@@ -8,7 +8,6 @@
 import Foundation
 
 class SettingsViewModel: ObservableObject {
-    @Published var appVersion: String = "1.0"
     
     func installWidget() {
         // Logic to handle widget installation

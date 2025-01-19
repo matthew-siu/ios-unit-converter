@@ -66,6 +66,7 @@
 			membershipExceptions = (
 				Model/MeasureType.swift,
 				Utils/AllExtensions.swift,
+				Utils/Utils.swift,
 			);
 			target = 14B32E702D2DD11C00E89370 /* iOSUnitConverterWidgetExtension */;
 		};
