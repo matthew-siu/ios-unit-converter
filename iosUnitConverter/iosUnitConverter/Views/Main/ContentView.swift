@@ -13,6 +13,11 @@ struct ContentView: View {
     
     @State var measureRequest: String!
     @State var selectedText: String = ""
+    @State var selectedTextfield: FocusedTextfield = .inputValue
+    
+    enum FocusedTextfield{
+        case inputValue, outputValue, inputPerValue, outputPerValue
+    }
     
     @StateObject private var vm = MainViewModel()
     
@@ -39,18 +44,25 @@ struct ContentView: View {
                         
                         // Inputs
                         HStack(spacing: 10){
-                            VStack(spacing: 12) {
-                                HStack(spacing: vm.isEggsSelected ? 5 : 10) {
-                                    if vm.isEggsSelected{
+                            let spacing: CGFloat = 20
+                            VStack(spacing: spacing) {
+                                HStack(spacing: vm.isPriceMode ? 5 : 10) {
+                                    if vm.isPriceMode{
                                         Text("$")
                                     }
-                                    TextField("Enter Price", text: $vm.inputValue)
+                                    
+                                    // input textfield
+                                    TextField("Tap something", text: $vm.inputValue)
                                         .padding(.horizontal, 13)
                                         .keyboardType(.decimalPad)
                                         .disabled(true)
                                         .frame(height: 50)
                                         .background(Color(.systemGray5))
                                         .cornerRadius(10)
+                                        .overlay {
+                                            RoundedRectangle(cornerRadius: 10)
+                                                .stroke(selectedTextfield == .inputValue ? Color(hex: "8A8A8A") : .clear, lineWidth: 1)
+                                        }
                                         .onChange(of: vm.inputValue) { oldValue, newValue in
                                             // Restrict to numbers and decimal point
                                             vm.inputValue = newValue.filter { $0.isNumber || $0 == "." }
@@ -60,9 +72,42 @@ struct ContentView: View {
                                             }
                                             self.vm.calculateConversion()
                                         }
+                                        .onTapGesture {
+                                            print("Tap Textfield1")
+                                            self.selectedTextfield = .inputValue
+                                        }
                                     
-                                    if vm.isEggsSelected{
+                                    if vm.isPriceMode{
                                         Text("per")
+                                    }
+                                    
+                                    // input per textfield
+                                    
+                                    if vm.showPerTextfield{
+                                        TextField("", text: $vm.inputPerValue)
+                                            .padding(.horizontal, 13)
+                                            .keyboardType(.decimalPad)
+                                            .disabled(true)
+                                            .frame(height: 50)
+                                            .background(Color(.systemGray5))
+                                            .cornerRadius(10)
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(selectedTextfield == .inputPerValue ? Color(hex: "8A8A8A") : .clear, lineWidth: 1)
+                                            }
+                                            .onChange(of: vm.inputPerValue) { oldValue, newValue in
+                                                // Restrict to numbers and decimal point
+                                                vm.inputPerValue = newValue.filter { $0.isNumber || $0 == "." }
+                                                // Prevent multiple decimals
+                                                if vm.inputPerValue.components(separatedBy: ".").count > 2 {
+                                                    vm.inputPerValue = String(vm.inputPerValue.dropLast())
+                                                }
+                                                self.vm.calculatePrice()
+                                            }
+                                            .onTapGesture {
+                                                print("Tap Textfield2")
+                                                self.selectedTextfield = .inputPerValue
+                                            }
                                     }
                                     
                                     Menu{
@@ -90,10 +135,12 @@ struct ContentView: View {
                                     }
                                 }
                                 
-                                HStack(spacing: vm.isEggsSelected ? 5 : 10) {
-                                    if vm.isEggsSelected{
+                                HStack(spacing: vm.isPriceMode ? 5 : 10) {
+                                    if vm.isPriceMode{
                                         Text("$")
                                     }
+                                    
+                                    // output textfield
                                     TextField("", text: $vm.outputValue)
                                         .padding(.horizontal, 13)
                                         .keyboardType(.decimalPad)
@@ -102,47 +149,96 @@ struct ContentView: View {
                                         .background(Color(.systemGray5))
                                         .cornerRadius(10)
                                     
-                                    if vm.isEggsSelected{
+                                    if vm.isPriceMode{
                                         Text("per")
                                     }
                                     
-                                    Menu{
-                                        Picker(selection: $vm.selectedOutputUnit) {
-                                            ForEach(vm.selectedMeasurement.units, id: \.symbol) { unit in
-                                                Text("\(unit.symbol) (\(unit.toFullUnit()))")
-                                                    .tag(unit)
+                                    // output per textfield
+                                    if vm.showPerTextfield{
+                                        TextField("", text: $vm.outputPerValue)
+                                            .padding(.horizontal, 13)
+                                            .keyboardType(.decimalPad)
+                                            .disabled(true)
+                                            .frame(height: 50)
+                                            .background(Color(.systemGray5))
+                                            .cornerRadius(10)
+                                            .overlay {
+                                                RoundedRectangle(cornerRadius: 10)
+                                                    .stroke(selectedTextfield == .outputPerValue ? Color(hex: "8A8A8A") : .clear, lineWidth: 1)
                                             }
-                                        } label: {}
-                                    }label:{
-                                        HStack {
-                                            Text(vm.selectedOutputUnit.symbol)
-                                                .foregroundStyle(colorScheme == .dark ? .white : .black)
-                                            Spacer()
-                                            Image(systemName: "chevron.down")
+                                            .onChange(of: vm.outputPerValue) { oldValue, newValue in
+                                                // Restrict to numbers and decimal point
+                                                vm.outputPerValue = newValue.filter { $0.isNumber || $0 == "." }
+                                                // Prevent multiple decimals
+                                                if vm.outputPerValue.components(separatedBy: ".").count > 2 {
+                                                    vm.outputPerValue = String(vm.outputPerValue.dropLast())
+                                                }
+                                                self.vm.calculatePrice()
+                                            }
+                                            .onTapGesture {
+                                                print("Tap Textfield4")
+                                                self.selectedTextfield = .outputPerValue
+                                            }
+                                    }
+                                    
+                                    ZStack{
+                                        Menu{
+                                            Picker(selection: $vm.selectedOutputUnit) {
+                                                ForEach(vm.selectedMeasurement.units, id: \.symbol) { unit in
+                                                    Text("\(unit.symbol) (\(unit.toFullUnit()))")
+                                                        .tag(unit)
+                                                }
+                                            } label: {}
+                                        }label:{
+                                            HStack {
+                                                Text(vm.selectedOutputUnit.symbol)
+                                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                                Spacer()
+                                                Image(systemName: "chevron.down")
+                                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+                                            }
+                                            .padding(.horizontal, 13)
+                                            .frame(height: 50)
+                                            .background(Color(.systemGray5))
+                                            .cornerRadius(10)
+                                        }
+                                        .onChange(of: vm.selectedOutputUnit) { oldValue, newValue in
+                                            self.vm.calculateConversion()
+                                        }
+                                        
+                                        Button {
+                                            self.vm.swapInputAndOutputUnit()
+                                        } label: {
+                                            Image(systemName: "arrow.up.arrow.down")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 20, height: 20)
+                                                .padding(5)
                                                 .foregroundStyle(colorScheme == .dark ? .white : .black)
                                         }
-                                        .padding(.horizontal, 13)
-                                        .frame(height: 50)
-                                        .background(Color(.systemGray5))
-                                        .cornerRadius(10)
+                                        .background(colorScheme == .dark ? .black : .white)
+                                        .cornerRadius(.infinity)
+                                        .overlay{
+                                            Circle()
+                                                .stroke(Color(.systemGray5), lineWidth: 1)
+                                        }
+                                        .padding(.bottom, 50 + spacing)
                                     }
-                                    .onChange(of: vm.selectedOutputUnit) { oldValue, newValue in
-                                        self.vm.calculateConversion()
-                                    }
+                                    .frame(height: 50)
                                 }
                                 
                             }
                             
-                            Button {
-                                self.vm.swapInputAndOutputUnit()
-                            } label: {
-                                Image(systemName: "arrow.up.arrow.down")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20, height: 20)
-                                    .padding(5)
-                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
-                            }
+//                            Button {
+//                                self.vm.swapInputAndOutputUnit()
+//                            } label: {
+//                                Image(systemName: "arrow.up.arrow.down")
+//                                    .resizable()
+//                                    .scaledToFit()
+//                                    .frame(width: 20, height: 20)
+//                                    .padding(5)
+//                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
+//                            }
                         }
                         .padding(.horizontal, 12)
                         
@@ -171,22 +267,75 @@ struct ContentView: View {
                 
                 Spacer()
                 
-                CustomKeyboardView(text: $vm.inputValue) {
-                    
+//                CustomKeyboardView(text: $vm.inputValue) {
+//                    
+//                }
+                
+                CustomKeyboardView(text: Binding(
+                    get: {
+                        switch selectedTextfield {
+                        case .inputValue:
+                            return vm.inputValue
+                        case .inputPerValue:
+                            return vm.inputPerValue
+                        case .outputValue:
+                            return vm.outputValue
+                        case .outputPerValue:
+                            return vm.outputPerValue
+                        }
+                    },
+                    set: { newValue in
+                        switch selectedTextfield {
+                        case .inputValue:
+                            vm.inputValue = newValue
+                        case .inputPerValue:
+                            vm.inputPerValue = newValue
+                        case .outputValue:
+                            vm.outputValue = newValue
+                        case .outputPerValue:
+                            vm.outputPerValue = newValue
+                        }
+                    }
+                )) {
+                    // Additional configuration or actions for the custom keyboard can go here
                 }
             }
-            .navigationTitle("Unit Converter") // Title added here
+            .navigationTitle(self.vm.selectedMeasurement.name) // Title added here
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(.secondarySystemBackground).ignoresSafeArea())
             .toolbar {
                 //                ToolbarItem(placement: .navigationBarTrailing) {
                 //                    EditButton()
                 //                }
-                ToolbarItem {
+                ToolbarItem(placement: .topBarLeading) {
                     NavigationLink(destination: SettingsView()) {
-                        Label("Settings", systemImage: "gearshape")
+                        Label("Settings", systemImage: "line.3.horizontal")
                     }
                     .tint(colorScheme == .dark ? Color.white : Color.black)
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        withAnimation{
+                            if vm.isEggs{
+                                self.vm.priceMode = true
+                            }else{
+                                self.vm.priceMode.toggle()
+                            }
+                        }
+                    } label: {
+                        Text("$ Price Mode")
+                            .font(.subheadline)
+                            .foregroundStyle(colorScheme == .dark ? self.vm.priceMode ? .black : .white : .black)
+                            .padding(5)
+                    }
+                    .background(self.vm.priceMode ? Color(hex: "FFDC23") : Color(.systemBackground))
+                    .frame(height: 34)
+                    .cornerRadius(8)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(self.vm.priceMode ? Color(hex: "E5B400") : Color(hex: "ECECEC"), lineWidth: 1)
+                    }
+//                    .tint(vm.priceMode ? Color(hex: "ECECEC") : .red) // Selected is green, unselected is red
                 }
             }
             .onOpenURL { incomingURL in
@@ -219,10 +368,10 @@ struct ContentView: View {
             .padding(.horizontal, 8)
             .frame(height: 70)
             .frame(minWidth: 70)
-            .background(isSelected ? Color.yellow : Color(.systemBackground))
+            .background(isSelected ? Color(hex: "FFDC23") : Color(.systemBackground))
             .overlay(
                 RoundedRectangle(cornerRadius: 8)
-                    .stroke(isSelected ? .orange : Color(hex: "ECECEC"), lineWidth: 2)
+                    .stroke(isSelected ? Color(hex: "E5B400") : Color(hex: "ECECEC"), lineWidth: 2)
             )
             .cornerRadius(8)
             
@@ -253,10 +402,10 @@ extension ContentView {
 
 #Preview {
     Group {
-        ContentView()
-            .environment(\.colorScheme, .light)
-        
 //        ContentView()
+//            .environment(\.colorScheme, .light)
+        
+        ContentView()
 //            .environment(\.colorScheme, .dark)
     }
     //    ContentView()

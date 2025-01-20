@@ -41,6 +41,19 @@ class MeasurementType {
         let inputMeasurement = Measurement(value: value, unit: from)
         return inputMeasurement.converted(to: to).value
     }
+    
+    func convert(value: Double, inputPer: Double, outputPer: Double, from: Dimension, to: Dimension) -> Double {
+        // Convert the `inputPer` amount to the target unit
+        let inputPerInTargetUnit = Measurement(value: inputPer, unit: from).converted(to: to).value
+        
+        // Calculate the value per target unit
+        let valuePerTargetUnit = value / inputPerInTargetUnit
+        
+        // Scale the value per target unit to the desired `outputPer`
+        let scaledValue = valuePerTargetUnit * outputPer
+        
+        return scaledValue
+    }
 }
 
 class Eggs: MeasurementType {
@@ -77,6 +90,10 @@ class Eggs: MeasurementType {
         let toCoefficient = to.converter.baseUnitValue(fromValue: 1)
             
         return (value / fromCoefficient) * toCoefficient
+    }
+    
+    override func convert(value: Double, inputPer: Double, outputPer: Double, from: Dimension, to: Dimension) -> Double {
+        self.convert(value: value, from: from, to: to)
     }
 }
 
@@ -195,12 +212,12 @@ class Area: MeasurementType {
 
 
 class UnitDozan: Dimension {
-    static let one = UnitDozan(symbol: "1", converter: UnitConverterLinear(coefficient: 1))
-    static let halfDozan = UnitDozan(symbol: "6", converter: UnitConverterLinear(coefficient: 6))
-    static let dozan = UnitDozan(symbol: "12", converter: UnitConverterLinear(coefficient: 12))
-    static let onehalfDozan = UnitDozan(symbol: "18", converter: UnitConverterLinear(coefficient: 18))
-    static let twoDozan = UnitDozan(symbol: "24", converter: UnitConverterLinear(coefficient: 24))
-    static let twoHalfDozan = UnitDozan(symbol: "30", converter: UnitConverterLinear(coefficient: 30))
+    static let one = UnitDozan(symbol: "1 egg", converter: UnitConverterLinear(coefficient: 1))
+    static let halfDozan = UnitDozan(symbol: "6 eggs", converter: UnitConverterLinear(coefficient: 6))
+    static let dozan = UnitDozan(symbol: "12 eggs", converter: UnitConverterLinear(coefficient: 12))
+    static let onehalfDozan = UnitDozan(symbol: "18 eggs", converter: UnitConverterLinear(coefficient: 18))
+    static let twoDozan = UnitDozan(symbol: "24 eggs", converter: UnitConverterLinear(coefficient: 24))
+    static let twoHalfDozan = UnitDozan(symbol: "30 eggs", converter: UnitConverterLinear(coefficient: 30))
 
     override class func baseUnit() -> Self {
         return UnitDozan(symbol: "egg", converter: UnitConverterLinear(coefficient: 1)) as! Self

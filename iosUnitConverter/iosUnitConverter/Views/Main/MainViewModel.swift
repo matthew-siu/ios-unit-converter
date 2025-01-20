@@ -11,9 +11,13 @@ class MainViewModel: ObservableObject{
     
     @Published var selectedMeasurement: MeasurementType
     @Published var inputValue: String = ""
-    @Published var outputValue: String = "0"
+    @Published var inputPerValue: String = "1"
+    @Published var outputValue: String = ""
+    @Published var outputPerValue: String = "1"
     @Published var selectedInputUnit: Dimension
     @Published var selectedOutputUnit: Dimension
+    
+    @Published var priceMode = true
     
     let measurementTypes: [MeasurementType] = [
         Eggs(),
@@ -24,8 +28,16 @@ class MainViewModel: ObservableObject{
         Area()
     ]
     
-    var isEggsSelected: Bool {
+    var isEggs: Bool{
         selectedMeasurement is Eggs
+    }
+    
+    var isPriceMode: Bool {
+        isEggs || priceMode
+    }
+    
+    var showPerTextfield: Bool{
+        !isEggs && priceMode
     }
     
     init() {
@@ -33,13 +45,16 @@ class MainViewModel: ObservableObject{
         selectedInputUnit = measurementTypes.first!.defaultInput
         selectedOutputUnit = measurementTypes.first!.defaultOutput
         
-        self.selectMeasurement(new: measurementTypes.first!)
+        let defaultType = measurementTypes.first(where: {$0 is Weight})!
+        self.selectMeasurement(new: defaultType)
     }
     
     func selectMeasurement(new: MeasurementType){
         selectedMeasurement = new
         selectedInputUnit = new.defaultInput
         selectedOutputUnit = new.defaultOutput
+        inputPerValue = "1"
+        outputPerValue = "1"
     }
     
     func selectMeasurement(deeplink: String){
@@ -59,19 +74,17 @@ class MainViewModel: ObservableObject{
     }
     
     func calculateConversion() {
+        if priceMode {
+            self.calculatePrice()
+            return
+        }
         guard let input = Double(inputValue) else {
             outputValue = "0"
             return
         }
 
         var convertedValue: Double = 0
-//        if let measurement = selectedMeasurement as? Eggs{
-//            convertedValue = measurement.convert(value: input, from: selectedInputUnit, to: selectedInputUnit)
-//        }else{
-            let inputUnit = selectedInputUnit
-            let outputUnit = selectedOutputUnit
-            convertedValue = selectedMeasurement.convert(value: input, from: inputUnit, to: outputUnit)
-//        }
+        convertedValue = selectedMeasurement.convert(value: input, from: selectedInputUnit, to: selectedOutputUnit)
 
         // Format the output: 2 decimal places for small numbers, fixed-point for others
         if convertedValue > 0.01 {
@@ -79,6 +92,23 @@ class MainViewModel: ObservableObject{
         } else {
             outputValue = String(format: "%.3g", convertedValue) // 3 significant figures
         }
-        print("convert \(inputValue)\(selectedInputUnit.symbol) = \(outputValue)\(selectedOutputUnit.symbol)")
+        print("calculateConversion \(inputValue)\(selectedInputUnit.symbol) = \(outputValue)\(selectedOutputUnit.symbol)")
+    }
+    
+    func calculatePrice(){
+        guard let input = Double(inputValue), let inputPer = Double(inputPerValue), let outputPer = Double(outputPerValue) else {
+            outputValue = "0"
+            return
+        }
+
+        var convertedValue: Double = 0
+        convertedValue = selectedMeasurement.convert(value: input, inputPer: inputPer, outputPer: outputPer, from: selectedInputUnit, to: selectedOutputUnit)
+        
+        if convertedValue > 0.01 {
+            outputValue = String(format: "%.2f", convertedValue) // 2 decimal places
+        } else {
+            outputValue = String(format: "%.3g", convertedValue) // 3 significant figures
+        }
+        print("calculatePrice \(inputValue)\(selectedInputUnit.symbol) = \(outputValue)\(selectedOutputUnit.symbol)")
     }
 }
