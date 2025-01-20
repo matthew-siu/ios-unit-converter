@@ -17,7 +17,7 @@ class MainViewModel: ObservableObject{
     @Published var selectedInputUnit: Dimension
     @Published var selectedOutputUnit: Dimension
     
-    @Published var priceMode = true
+    @Published var priceMode = false
     
     let measurementTypes: [MeasurementType] = [
         Eggs(),

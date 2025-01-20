@@ -23,7 +23,10 @@ struct ContentView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 0) {
+                
+//                BannerAdView()
+//                    .frame(height: 50, alignment: .center)
                 
                 ScrollView {
                     VStack(spacing: 24) {
@@ -52,7 +55,7 @@ struct ContentView: View {
                                     }
                                     
                                     // input textfield
-                                    TextField("Tap something", text: $vm.inputValue)
+                                    TextField("Enter", text: $vm.inputValue)
                                         .padding(.horizontal, 13)
                                         .keyboardType(.decimalPad)
                                         .disabled(true)
@@ -213,7 +216,7 @@ struct ContentView: View {
                                                 .resizable()
                                                 .scaledToFit()
                                                 .frame(width: 20, height: 20)
-                                                .padding(5)
+                                                .padding(10)
                                                 .foregroundStyle(colorScheme == .dark ? .white : .black)
                                         }
                                         .background(colorScheme == .dark ? .black : .white)
@@ -265,12 +268,6 @@ struct ContentView: View {
                 }
                 .padding(.top, 5)
                 
-                Spacer()
-                
-//                CustomKeyboardView(text: $vm.inputValue) {
-//                    
-//                }
-                
                 CustomKeyboardView(text: Binding(
                     get: {
                         switch selectedTextfield {
@@ -299,6 +296,9 @@ struct ContentView: View {
                 )) {
                     // Additional configuration or actions for the custom keyboard can go here
                 }
+                
+                BannerAdView()
+                    .frame(height: 50, alignment: .center)
             }
             .navigationTitle(self.vm.selectedMeasurement.name) // Title added here
             .navigationBarTitleDisplayMode(.inline)
@@ -327,13 +327,15 @@ struct ContentView: View {
                             .font(.subheadline)
                             .foregroundStyle(colorScheme == .dark ? self.vm.priceMode ? .black : .white : .black)
                             .padding(5)
+                            .padding(.trailing, 5)
                     }
-                    .background(self.vm.priceMode ? Color(hex: "FFDC23") : Color(.systemBackground))
+//                    .background(self.vm.priceMode ? Color(hex: "FFDC23") : Color(.systemBackground))
+                    .background(self.vm.priceMode ? Color(hex: "FFDC23") : colorScheme == .dark ? Color(.systemGray4) : .white )
                     .frame(height: 34)
                     .cornerRadius(8)
                     .overlay {
                         RoundedRectangle(cornerRadius: 8)
-                            .stroke(self.vm.priceMode ? Color(hex: "E5B400") : Color(hex: "ECECEC"), lineWidth: 1)
+                            .stroke(self.vm.priceMode ? Color(hex: "E5B400") : Color(hex: "ECECEC"), lineWidth: colorScheme == .dark ? 0 : 1)
                     }
 //                    .tint(vm.priceMode ? Color(hex: "ECECEC") : .red) // Selected is green, unselected is red
                 }

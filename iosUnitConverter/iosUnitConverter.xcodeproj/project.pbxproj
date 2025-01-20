@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14A87CA22D3E2F720090A94B /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 14A87CA12D3E2F720090A94B /* GoogleMobileAds */; };
 		14B32E742D2DD11C00E89370 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B32E732D2DD11C00E89370 /* WidgetKit.framework */; };
 		14B32E762D2DD11C00E89370 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B32E752D2DD11C00E89370 /* SwiftUI.framework */; };
 		14B32E852D2DD11E00E89370 /* iOSUnitConverterWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 14B32E712D2DD11C00E89370 /* iOSUnitConverterWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -129,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14A87CA22D3E2F720090A94B /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -213,6 +215,7 @@
 			);
 			name = iosUnitConverter;
 			packageProductDependencies = (
+				14A87CA12D3E2F720090A94B /* GoogleMobileAds */,
 			);
 			productName = iosUnitConverter;
 			productReference = 14B32E3D2D2DCF3000E89370 /* iosUnitConverter.app */;
@@ -321,6 +324,9 @@
 			);
 			mainGroup = 14B32E342D2DCF3000E89370;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				14A87CA02D3E2F720090A94B /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 14B32E3E2D2DCF3000E89370 /* Products */;
 			projectDirPath = "";
@@ -825,6 +831,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		14A87CA02D3E2F720090A94B /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.13.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		14A87CA12D3E2F720090A94B /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14A87CA02D3E2F720090A94B /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 14B32E352D2DCF3000E89370 /* Project object */;
 }

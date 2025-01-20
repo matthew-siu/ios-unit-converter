@@ -49,6 +49,11 @@ struct SettingsView: View {
             }
             .listStyle(InsetGroupedListStyle())
             
+            
+            
+            BannerAdView()
+                .frame(height: 50, alignment: .center)
+            
             // App Version
             Text("v\(Utils.getVersion())")
                 .font(.footnote)

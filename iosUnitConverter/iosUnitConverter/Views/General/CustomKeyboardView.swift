@@ -65,7 +65,6 @@ struct CustomKeyboardView: View {
         }
         .padding()
         .background(Color(.systemGray6))
-        .cornerRadius(12)
     }
 
     private func handleKeyPress(_ key: String) {
