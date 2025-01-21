@@ -68,7 +68,7 @@ struct iOSMainWidgetMedium: View {
     var body: some View {
         VStack(spacing: 12){
             HStack(spacing: 8){
-                PAIWelcomeWidgetButton(urlString: "pugskyiuc://converter?type=eggs", imgName: "cart", text: "Eggs", layout: .vertical)
+                PAIWelcomeWidgetButton(urlString: "pugskyiuc://converter?type=eggs", imgName: "oval.portrait", text: "Eggs", layout: .vertical)
                 PAIWelcomeWidgetButton(urlString: "pugskyiuc://converter?type=length", imgName: "arrow.left.and.right", text: "Length", layout: .vertical)
                 PAIWelcomeWidgetButton(urlString: "pugskyiuc://converter?type=weight", imgName: "escape", text: "Weight", layout: .vertical)
                 PAIWelcomeWidgetButton(urlString: "pugskyiuc://converter?type=volume", imgName: "cube", text: "Volume", layout: .vertical)

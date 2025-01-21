@@ -63,7 +63,9 @@ struct CustomKeyboardView: View {
                 }
             }
         }
-        .padding()
+        .padding(.horizontal, 15)
+        .padding(.bottom, 10)
+        .padding(.top, 5)
         .background(Color(.systemGray6))
     }
 

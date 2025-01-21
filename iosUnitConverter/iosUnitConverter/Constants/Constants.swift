@@ -5,8 +5,15 @@
 //  Created by Matthew Siu on 20/1/2025.
 //
 
+import Foundation
+
 struct Constants{
-    let appGroupName = "group.com.nipohcuis.eclipsemints-apps"
+    let appGroupName = "group.com.nipohcuis.iosUnitConverter-apps"
+    
+    struct Storage{
+//        static let disableInterstitialAdsCounter = "disableInterstitialAdsCounter" // Bool
+        static let adsFreeTimestamp = "adsFreeTimestamp" // Double
+    }
     
     struct Admob{
         
@@ -34,5 +41,12 @@ struct Constants{
         
         
         static let REWARDED_DAYS: Int = 1
+    }
+    
+    struct Noti{
+        static let RCUpdateNotification = Notification.Name("RCUpdateNotification")
+        
+        static let InterstitialAdsFinsihedNotification = Notification.Name("InterstitialAdsFinsihedNotification")
+        static let RewardAdsFinsihedNotification = Notification.Name("RewardAdsFinsihedNotification")
     }
 }

@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		14A87CA22D3E2F720090A94B /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 14A87CA12D3E2F720090A94B /* GoogleMobileAds */; };
+		14A87CD12D3F65900090A94B /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = 14A87CD02D3F65900090A94B /* FirebaseAnalytics */; };
+		14A87CD32D3F65900090A94B /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 14A87CD22D3F65900090A94B /* FirebaseCrashlytics */; };
+		14A87CD52D3F65900090A94B /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 14A87CD42D3F65900090A94B /* FirebaseRemoteConfig */; };
 		14B32E742D2DD11C00E89370 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B32E732D2DD11C00E89370 /* WidgetKit.framework */; };
 		14B32E762D2DD11C00E89370 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14B32E752D2DD11C00E89370 /* SwiftUI.framework */; };
 		14B32E852D2DD11E00E89370 /* iOSUnitConverterWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 14B32E712D2DD11C00E89370 /* iOSUnitConverterWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -67,6 +70,7 @@
 			membershipExceptions = (
 				Model/MeasureType.swift,
 				Utils/AllExtensions.swift,
+				Utils/LocalStorage.swift,
 				Utils/Utils.swift,
 			);
 			target = 14B32E702D2DD11C00E89370 /* iOSUnitConverterWidgetExtension */;
@@ -130,7 +134,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14A87CD32D3F65900090A94B /* FirebaseCrashlytics in Frameworks */,
+				14A87CD12D3F65900090A94B /* FirebaseAnalytics in Frameworks */,
 				14A87CA22D3E2F720090A94B /* GoogleMobileAds in Frameworks */,
+				14A87CD52D3F65900090A94B /* FirebaseRemoteConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,6 +223,9 @@
 			name = iosUnitConverter;
 			packageProductDependencies = (
 				14A87CA12D3E2F720090A94B /* GoogleMobileAds */,
+				14A87CD02D3F65900090A94B /* FirebaseAnalytics */,
+				14A87CD22D3F65900090A94B /* FirebaseCrashlytics */,
+				14A87CD42D3F65900090A94B /* FirebaseRemoteConfig */,
 			);
 			productName = iosUnitConverter;
 			productReference = 14B32E3D2D2DCF3000E89370 /* iosUnitConverter.app */;
@@ -326,6 +336,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				14A87CA02D3E2F720090A94B /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				14A87CCF2D3F65900090A94B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 14B32E3E2D2DCF3000E89370 /* Products */;
@@ -550,8 +561,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosUnitConverter/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Unit Converter";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_CFBundleDisplayName = "Price Match - Unit Converter";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -560,8 +571,8 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -594,8 +605,8 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = iosUnitConverter/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Unit Converter";
-				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				INFOPLIST_KEY_CFBundleDisplayName = "Price Match - Unit Converter";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.shopping";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -604,8 +615,8 @@
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -841,6 +852,14 @@
 				minimumVersion = 11.13.0;
 			};
 		};
+		14A87CCF2D3F65900090A94B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.7.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -848,6 +867,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 14A87CA02D3E2F720090A94B /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		14A87CD02D3F65900090A94B /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14A87CCF2D3F65900090A94B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		14A87CD22D3F65900090A94B /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14A87CCF2D3F65900090A94B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		14A87CD42D3F65900090A94B /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 14A87CCF2D3F65900090A94B /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
