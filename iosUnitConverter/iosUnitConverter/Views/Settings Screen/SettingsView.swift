@@ -19,9 +19,9 @@ struct SettingsView: View {
             // Main List
             List {
                 Section {
-                    SettingsRow(title: "Install Widget", subtitle: "Add for quick access") {
-                        viewModel.installWidget()
-                    }
+//                    SettingsRow(title: "Install Widget", subtitle: "Add for quick access") {
+//                        viewModel.installWidget()
+//                    }
                     
                     SettingsRow(title: "Gift us a coffee", subtitle: "Remove annoying Ads") {
 //                        DispatchQueue.main.async {
@@ -37,17 +37,18 @@ struct SettingsView: View {
                 
                 // Restore Purchases and Terms of Service
                 Section {
-                    Button(action: {
-                        viewModel.restorePurchases()
-                    }) {
-                        Text("Restore Purchases")
-                            .foregroundColor(.green)
-                    }
+//                    Button(action: {
+//                        viewModel.restorePurchases()
+//                    }) {
+//                        Text("Restore Purchases")
+//                            .foregroundColor(.green)
+//                    }
                     
                     Button(action: {
-                        viewModel.viewTermsOfService()
+//                        viewModel.viewTermsOfService()
+                        self.openURL()
                     }) {
-                        Text("Terms of Service")
+                        Text("Privacy Policy")
                             .foregroundColor(.green)
                     }
                 }
@@ -67,6 +68,12 @@ struct SettingsView: View {
         }
         .navigationBarTitle("Menu", displayMode: .inline)
         .priceScreenPopup(isPresented: $showPricePopup)
+    }
+    
+    func openURL(){
+        if let url = URL(string: "https://pugskystudio.com/unitconverter-p%26p"){
+            UIApplication.shared.open(url)
+        }
     }
 }
 

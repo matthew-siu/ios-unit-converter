@@ -12,7 +12,7 @@ class MainViewModel: ObservableObject{
     @Published var selectedMeasurement: MeasurementType
     @Published var inputValue: String = ""
     @Published var inputPerValue: String = "1"
-    @Published var outputValue: String = ""
+    @Published var outputValue: String = "0"
     @Published var outputPerValue: String = "1"
     @Published var selectedInputUnit: Dimension
     @Published var selectedOutputUnit: Dimension

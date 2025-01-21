@@ -58,6 +58,7 @@ struct ContentView: View {
                                     TextField("Enter", text: $vm.inputValue)
                                         .padding(.horizontal, 13)
                                         .keyboardType(.decimalPad)
+                                        .multilineTextAlignment(.trailing)
                                         .disabled(true)
                                         .frame(height: 50)
                                         .background(Color(.systemGray5))
@@ -90,6 +91,7 @@ struct ContentView: View {
                                         TextField("", text: $vm.inputPerValue)
                                             .padding(.horizontal, 13)
                                             .keyboardType(.decimalPad)
+                                            .multilineTextAlignment(.trailing)
                                             .disabled(true)
                                             .frame(height: 50)
                                             .background(Color(.systemGray5))
@@ -145,11 +147,13 @@ struct ContentView: View {
                                     
                                     // output textfield
                                     TextField("", text: $vm.outputValue)
+                                        .font(.title)
+                                        .multilineTextAlignment(.trailing)
                                         .padding(.horizontal, 13)
                                         .keyboardType(.decimalPad)
                                         .disabled(true)
                                         .frame(height: 50)
-                                        .background(Color(.systemGray5))
+//                                        .background(Color(.systemGray5))
                                         .cornerRadius(10)
                                     
                                     if vm.isPriceMode{
@@ -161,6 +165,7 @@ struct ContentView: View {
                                         TextField("", text: $vm.outputPerValue)
                                             .padding(.horizontal, 13)
                                             .keyboardType(.decimalPad)
+                                            .multilineTextAlignment(.trailing)
                                             .disabled(true)
                                             .frame(height: 50)
                                             .background(Color(.systemGray5))
@@ -247,23 +252,22 @@ struct ContentView: View {
                         
                         Divider()
                         
-                        // History Section
-                        VStack(alignment: .leading, spacing: 10) {
-                            HStack {
-                                Text("History")
-                                    .font(.headline)
-                                    .foregroundColor(.black)
-                                
-                                Spacer()
-                                
-                                Button("Clear") {
-                                    //                                history.removeAll()
-                                }
-                                .foregroundColor(.green)
-                            }
-                            
-                        }
-                        .padding(.horizontal)
+//                        // History Section
+//                        VStack(alignment: .leading, spacing: 10) {
+//                            HStack {
+//                                Text("History")
+//                                    .font(.headline)
+//                                    .foregroundColor(.primary)
+//
+//                                Spacer()
+//                                
+//                                Button("Clear") {
+//                                }
+//                                .foregroundColor(.green)
+//                            }
+//                            
+//                        }
+//                        .padding(.horizontal)
                     }
                 }
                 .padding(.top, 5)

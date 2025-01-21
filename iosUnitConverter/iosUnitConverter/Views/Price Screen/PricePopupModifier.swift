@@ -57,6 +57,7 @@ struct PricePopupModifier: ViewModifier {
                                 .foregroundColor(Color(.systemGray))
                         }
                         
+                        /*
                         VStack{
                             HStack(alignment: .bottom, spacing: 5){
                                 CoffeeView(icon: "coffeeM", height: 100, priceTag: "$9.99"){
@@ -74,7 +75,7 @@ struct PricePopupModifier: ViewModifier {
                                 .font(.caption)
                                 .foregroundColor(Color(.systemGray))
                         }
-                        
+                        */
                     }
 
                     // Footer
