@@ -68,6 +68,7 @@
 		149F5FBE2D2FABD900628355 /* Exceptions for "iosUnitConverter" folder in "iOSUnitConverterWidgetExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				Model/ConvertedItem.swift,
 				Model/MeasureType.swift,
 				Utils/AllExtensions.swift,
 				Utils/LocalStorage.swift,

@@ -10,6 +10,9 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
+    @Environment(\.modelContext) var context
+//    @Query(sort: \ConvertedItem.cts) private var history: [ConvertedItem]
+    @Query  var historyItems: [ConvertedItem]
     
     @State var measureRequest: String!
     @State var selectedText: String = ""
@@ -234,40 +237,40 @@ struct ContentView: View {
                                     }
                                     .frame(height: 50)
                                 }
-                                
                             }
-                            
-//                            Button {
-//                                self.vm.swapInputAndOutputUnit()
-//                            } label: {
-//                                Image(systemName: "arrow.up.arrow.down")
-//                                    .resizable()
-//                                    .scaledToFit()
-//                                    .frame(width: 20, height: 20)
-//                                    .padding(5)
-//                                    .foregroundStyle(colorScheme == .dark ? .white : .black)
-//                            }
                         }
                         .padding(.horizontal, 12)
                         
                         Divider()
                         
-//                        // History Section
-//                        VStack(alignment: .leading, spacing: 10) {
-//                            HStack {
-//                                Text("History")
-//                                    .font(.headline)
-//                                    .foregroundColor(.primary)
-//
-//                                Spacer()
-//                                
-//                                Button("Clear") {
-//                                }
-//                                .foregroundColor(.green)
-//                            }
-//                            
-//                        }
-//                        .padding(.horizontal)
+                        // History Section
+                        VStack(alignment: .leading) {
+                            HStack {
+                                Text("History")
+                                    .font(.headline)
+                                Spacer()
+                                Button("Clear All") {
+                                    for item in historyItems where item.measurementType == vm.selectedMeasurement.name {
+                                        context.delete(item)
+                                    }
+                                }
+                                .foregroundColor(.red)
+                            }
+                            .padding(.horizontal, 10)
+                            
+                            ForEach(historyItems) { item in
+                                VStack(alignment: .leading) {
+                                    Text("\(item.inputValue)/\(item.inputPerValue ?? "")\(item.inputUnit) = \(item.outputValue)\(item.outputPerValue ?? "") \(item.outputUnit)")
+                                        .font(.body)
+                                        .foregroundStyle(.black)
+                                }
+                            }
+                            .onDelete { indices in
+                                for index in indices {
+                                    context.delete(historyItems[index])
+                                }
+                            }
+                        }
                     }
                 }
                 .padding(.top, 5)
@@ -299,6 +302,7 @@ struct ContentView: View {
                             }
                         }
                     )) {
+                        self.saveConversion()
                         self.countAds()
                     }
                     
@@ -355,6 +359,9 @@ struct ContentView: View {
                 self.showPricePopup = true
             })
             .priceScreenPopup(isPresented: $showPricePopup)
+            .onAppear{
+                print("historyItems = \(historyItems.count)")
+            }
         }
     }
     
@@ -387,12 +394,26 @@ struct ContentView: View {
                     .stroke(isSelected ? Color(hex: "E5B400") : Color(hex: "ECECEC"), lineWidth: 2)
             )
             .cornerRadius(8)
-            
         }
     }
 }
 
 extension ContentView {
+    
+    private func saveConversion() {
+        let newItem = ConvertedItem(
+            cts: Date().timeIntervalSince1970,
+            measurementType: vm.selectedMeasurement.name,
+            inputValue: vm.inputValue,
+            inputPerValue: vm.inputPerValue,
+            inputUnit: vm.selectedInputUnit.symbol,
+            outputValue: vm.outputValue,
+            outputPerValue: vm.outputPerValue,
+            outputUnit: vm.selectedOutputUnit.symbol
+        )
+        print("save \(newItem.measurementType): \(newItem.inputValue)/\(newItem.inputPerValue ?? "")\(newItem.inputUnit) -> \(newItem.outputValue)/\(newItem.outputPerValue ?? "")\(newItem.outputUnit)")
+        context.insert(newItem)
+    }
     
     private func selectMeasurement(new: MeasurementType) {
         withAnimation {
