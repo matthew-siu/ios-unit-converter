@@ -302,8 +302,8 @@ struct ContentView: View {
                         self.countAds()
                     }
                     
-                    BannerAdView()
-                        .frame(height: 50, alignment: .center)
+//                    BannerAdView()
+//                        .frame(height: 50, alignment: .center)
                 }
             }
             .navigationTitle(self.vm.selectedMeasurement.name) // Title added here
