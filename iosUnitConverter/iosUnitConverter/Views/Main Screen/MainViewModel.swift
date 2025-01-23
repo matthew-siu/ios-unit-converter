@@ -73,6 +73,11 @@ class MainViewModel: ObservableObject{
         selectedOutputUnit = tmp
     }
     
+    func togglePriceMode(){
+        self.priceMode.toggle()
+        calculateConversion()
+    }
+    
     func calculateConversion() {
         if priceMode {
             self.calculatePrice()

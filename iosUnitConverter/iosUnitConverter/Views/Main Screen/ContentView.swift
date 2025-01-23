@@ -94,6 +94,7 @@ struct ContentView: View {
                                             .multilineTextAlignment(.trailing)
                                             .disabled(true)
                                             .frame(height: 50)
+                                            .frame(maxWidth: 50)
                                             .background(Color(.systemGray5))
                                             .cornerRadius(10)
                                             .overlay {
@@ -147,7 +148,7 @@ struct ContentView: View {
                                     
                                     // output textfield
                                     TextField("", text: $vm.outputValue)
-                                        .font(.title)
+                                        .font(.title2)
                                         .multilineTextAlignment(.trailing)
                                         .padding(.horizontal, 13)
                                         .keyboardType(.decimalPad)
@@ -168,6 +169,7 @@ struct ContentView: View {
                                             .multilineTextAlignment(.trailing)
                                             .disabled(true)
                                             .frame(height: 50)
+                                            .frame(maxWidth: 50)
                                             .background(Color(.systemGray5))
                                             .cornerRadius(10)
                                             .overlay {
@@ -325,7 +327,7 @@ struct ContentView: View {
                             if vm.isEggs{
                                 self.vm.priceMode = true
                             }else{
-                                self.vm.priceMode.toggle()
+                                self.vm.togglePriceMode()
                                 self.countAds()
                             }
                         }
