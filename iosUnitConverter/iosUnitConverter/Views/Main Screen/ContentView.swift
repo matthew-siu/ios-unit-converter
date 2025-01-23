@@ -403,13 +403,13 @@ extension ContentView {
     }
     
     private func countAds(){
-        if AdmobManager.shared.skipAdsCounter(){
-            return
-        }
-        self.adsActionCount += 1
-        if self.adsActionCount % 5 == 0{
-            self.isShowingInterstitialAd = true
-        }
+//        if AdmobManager.shared.skipAdsCounter(){
+//            return
+//        }
+//        self.adsActionCount += 1
+//        if self.adsActionCount % 5 == 0{
+//            self.isShowingInterstitialAd = true
+//        }
     }
     
     private func handleIncomingURL(_ url: URL) {
