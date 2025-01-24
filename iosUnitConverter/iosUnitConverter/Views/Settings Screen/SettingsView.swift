@@ -67,7 +67,7 @@ struct SettingsView: View {
                 .padding(.top, 10)
         }
         .navigationBarTitle("Menu", displayMode: .inline)
-        .priceScreenPopup(isPresented: $showPricePopup)
+//        .priceScreenPopup(isPresented: $showPricePopup)
     }
     
     func openURL(){

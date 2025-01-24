@@ -351,12 +351,12 @@ struct ContentView: View {
                 print("App was opened via URL: \(incomingURL)")
                 handleIncomingURL(incomingURL)
             }
-            .interstitialAd(isShowing: $isShowingInterstitialAd, onAdDismissed: {
-                print("[Interstitial] Ad dismissed")
-                // show buy me coffee view
-                self.showPricePopup = true
-            })
-            .priceScreenPopup(isPresented: $showPricePopup)
+//            .interstitialAd(isShowing: $isShowingInterstitialAd, onAdDismissed: {
+//                print("[Interstitial] Ad dismissed")
+//                // show buy me coffee view
+//                self.showPricePopup = true
+//            })
+//            .priceScreenPopup(isPresented: $showPricePopup)
         }
     }
     
