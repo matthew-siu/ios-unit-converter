@@ -304,17 +304,14 @@ struct ContentView: View {
                         self.countAds()
                     }
                     
-//                    BannerAdView()
-//                        .frame(height: 50, alignment: .center)
+                    BannerAdView()
+                        .frame(height: 50, alignment: .center)
                 }
             }
             .navigationTitle(self.vm.selectedMeasurement.name) // Title added here
             .navigationBarTitleDisplayMode(.inline)
             .background(Color(.secondarySystemBackground).ignoresSafeArea())
             .toolbar {
-                //                ToolbarItem(placement: .navigationBarTrailing) {
-                //                    EditButton()
-                //                }
                 ToolbarItem(placement: .topBarLeading) {
                     NavigationLink(destination: SettingsView()) {
                         Label("Settings", systemImage: "line.3.horizontal")
@@ -351,12 +348,12 @@ struct ContentView: View {
                 print("App was opened via URL: \(incomingURL)")
                 handleIncomingURL(incomingURL)
             }
-//            .interstitialAd(isShowing: $isShowingInterstitialAd, onAdDismissed: {
-//                print("[Interstitial] Ad dismissed")
-//                // show buy me coffee view
-//                self.showPricePopup = true
-//            })
-//            .priceScreenPopup(isPresented: $showPricePopup)
+            .interstitialAd(isShowing: $isShowingInterstitialAd, onAdDismissed: {
+                print("[Interstitial] Ad dismissed")
+                // show buy me coffee view
+                self.showPricePopup = true
+            })
+            .priceScreenPopup(isPresented: $showPricePopup)
         }
     }
     
@@ -403,13 +400,13 @@ extension ContentView {
     }
     
     private func countAds(){
-//        if AdmobManager.shared.skipAdsCounter(){
-//            return
-//        }
-//        self.adsActionCount += 1
-//        if self.adsActionCount % 5 == 0{
-//            self.isShowingInterstitialAd = true
-//        }
+        if AdmobManager.shared.skipAdsCounter(){
+            return
+        }
+        self.adsActionCount += 1
+        if self.adsActionCount % 5 == 0{
+            self.isShowingInterstitialAd = true
+        }
     }
     
     private func handleIncomingURL(_ url: URL) {

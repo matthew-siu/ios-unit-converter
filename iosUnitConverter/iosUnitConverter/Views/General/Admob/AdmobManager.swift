@@ -75,7 +75,7 @@ extension AdmobManager{
     func skipAdsCounter() -> Bool {
         let currentTime = Date().timeIntervalSince1970
         if let adsFreeTimestamp = LocalStorage.getDouble(Constants.Storage.adsFreeTimestamp){
-            print("Ads Free Timestamp: \(DateFormatter.localizedString(from: Date(timeIntervalSince1970: adsFreeTimestamp), dateStyle: .medium, timeStyle: .medium))")
+            print("Ads Free Until: \(DateFormatter.localizedString(from: Date(timeIntervalSince1970: adsFreeTimestamp), dateStyle: .medium, timeStyle: .medium))")
             return currentTime < adsFreeTimestamp
         }else{
             return false

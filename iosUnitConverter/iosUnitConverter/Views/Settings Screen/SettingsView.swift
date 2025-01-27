@@ -23,12 +23,12 @@ struct SettingsView: View {
 //                        viewModel.installWidget()
 //                    }
                     
-//                    SettingsRow(title: "Gift us a coffee", subtitle: "Remove annoying Ads") {
-////                        DispatchQueue.main.async {
-////                            NotificationCenter.default.post(name: Constants.Noti.InterstitialAdsFinsihedNotification, object: nil)
-////                        }
-//                        self.showPricePopup = true
-//                    }
+                    SettingsRow(title: "Gift us a coffee", subtitle: "Remove annoying Ads") {
+//                        DispatchQueue.main.async {
+//                            NotificationCenter.default.post(name: Constants.Noti.InterstitialAdsFinsihedNotification, object: nil)
+//                        }
+                        self.showPricePopup = true
+                    }
                     
                     SettingsRow(title: "Rate Us", subtitle: "Show us some love!") {
                         self.requestReview()
@@ -57,8 +57,8 @@ struct SettingsView: View {
             
             
             
-//            BannerAdView()
-//                .frame(height: 50, alignment: .center)
+            BannerAdView()
+                .frame(height: 50, alignment: .center)
             
             // App Version
             Text("v\(Utils.getVersion())")
@@ -67,7 +67,7 @@ struct SettingsView: View {
                 .padding(.top, 10)
         }
         .navigationBarTitle("Menu", displayMode: .inline)
-//        .priceScreenPopup(isPresented: $showPricePopup)
+        .priceScreenPopup(isPresented: $showPricePopup)
     }
     
     func openURL(){
