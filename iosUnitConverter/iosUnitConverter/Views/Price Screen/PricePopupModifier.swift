@@ -157,5 +157,5 @@ extension View {
 
 #Preview {
     ContentView()
-        .priceScreenPopup(isPresented: .constant(true))
+        .priceScreenPopup(isPresented: .constant(false))
 }
