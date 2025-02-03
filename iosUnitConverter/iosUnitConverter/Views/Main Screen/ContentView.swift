@@ -56,13 +56,16 @@ struct ContentView: View {
                                     
                                     // input textfield
                                     TextField("Enter", text: $vm.inputValue)
-                                        .padding(.horizontal, 13)
+                                        .font(.system(size: 24))
+                                        .padding(.trailing, 13)
                                         .keyboardType(.decimalPad)
                                         .multilineTextAlignment(.trailing)
                                         .disabled(true)
                                         .frame(height: 50)
                                         .background(Color(.systemGray5))
                                         .cornerRadius(10)
+                                        .minimumScaleFactor(0.5)
+                                        .lineLimit(1)
                                         .overlay {
                                             RoundedRectangle(cornerRadius: 10)
                                                 .stroke(selectedTextfield == .inputValue ? Color(hex: "8A8A8A") : .clear, lineWidth: 1)
@@ -89,14 +92,17 @@ struct ContentView: View {
                                     
                                     if vm.showPerTextfield{
                                         TextField("", text: $vm.inputPerValue)
-                                            .padding(.horizontal, 13)
+                                            .font(.system(size: 24))
+                                            .padding(.horizontal, 0)
                                             .keyboardType(.decimalPad)
-                                            .multilineTextAlignment(.trailing)
+                                            .multilineTextAlignment(.center)
                                             .disabled(true)
                                             .frame(height: 50)
                                             .frame(maxWidth: 50)
                                             .background(Color(.systemGray5))
                                             .cornerRadius(10)
+                                            .minimumScaleFactor(0.5)
+                                            .lineLimit(1)
                                             .overlay {
                                                 RoundedRectangle(cornerRadius: 10)
                                                     .stroke(selectedTextfield == .inputPerValue ? Color(hex: "8A8A8A") : .clear, lineWidth: 1)
@@ -148,14 +154,15 @@ struct ContentView: View {
                                     
                                     // output textfield
                                     TextField("", text: $vm.outputValue)
-                                        .font(.title2)
+                                        .font(.system(size: 36))
                                         .multilineTextAlignment(.trailing)
-                                        .padding(.horizontal, 13)
+                                        .padding(.trailing, 13)
                                         .keyboardType(.decimalPad)
                                         .disabled(true)
                                         .frame(height: 50)
-//                                        .background(Color(.systemGray5))
                                         .cornerRadius(10)
+                                        .minimumScaleFactor(0.25)
+                                        .lineLimit(1)
                                     
                                     if vm.isPriceMode{
                                         Text("per")
@@ -164,14 +171,17 @@ struct ContentView: View {
                                     // output per textfield
                                     if vm.showPerTextfield{
                                         TextField("", text: $vm.outputPerValue)
-                                            .padding(.horizontal, 13)
+                                            .font(.system(size: 24))
+                                            .padding(.horizontal, 0)
                                             .keyboardType(.decimalPad)
-                                            .multilineTextAlignment(.trailing)
+                                            .multilineTextAlignment(.center)
                                             .disabled(true)
                                             .frame(height: 50)
                                             .frame(maxWidth: 50)
                                             .background(Color(.systemGray5))
                                             .cornerRadius(10)
+                                            .minimumScaleFactor(0.5)
+                                            .lineLimit(1)
                                             .overlay {
                                                 RoundedRectangle(cornerRadius: 10)
                                                     .stroke(selectedTextfield == .outputPerValue ? Color(hex: "8A8A8A") : .clear, lineWidth: 1)
