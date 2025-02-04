@@ -336,7 +336,7 @@ struct ContentView: View {
                     Button {
                         withAnimation{
                             if vm.isEggs{
-                                self.vm.priceMode = true
+                                self.vm.togglePriceMode(true)
                             }else{
                                 self.vm.togglePriceMode()
                                 self.countAds()
@@ -421,7 +421,10 @@ extension ContentView {
             outputUnit: vm.selectedOutputUnit.symbol
         )
         print("save \(newItem.measurementType): \(newItem.inputValue)/\(newItem.inputPerValue ?? "")\(newItem.inputUnit) -> \(newItem.outputValue)/\(newItem.outputPerValue ?? "")\(newItem.outputUnit)")
-        context.insert(newItem)
+        if !newItem.inputValue.isEmpty && !newItem.outputValue.isEmpty{
+            context.insert(newItem)
+        }
+        
     }
     
     private func selectMeasurement(new: MeasurementType) {

@@ -32,10 +32,10 @@ struct iOSUnitConverterWidgetControl: ControlWidget {
         StaticControlConfiguration(kind: Self.kind) {
                 /// This one - based on the demo code - doesn't work on simulator or device
                 ControlWidgetButton(action: LaunchAppIntent()) {
-                    Label("Start Measure", systemImage: "pencil.and.ruler")
+                    Label("Unit Converter", systemImage: "pencil.and.ruler")
                 }
             }
-            .displayName("Start Measure")
+            .displayName("Unit Converter")
             .description("Start groceries and price match")
     }
 }
@@ -91,7 +91,7 @@ struct StartTimerIntent: SetValueIntent {
 
 @available(iOS 18.0, *)
 struct LaunchAppIntent: AppIntent {
-    static var title: LocalizedStringResource = "Start Measure"
+    static var title: LocalizedStringResource = "Unit Converter"
     static var openAppWhenRun: Bool = true
     
     init() { }
