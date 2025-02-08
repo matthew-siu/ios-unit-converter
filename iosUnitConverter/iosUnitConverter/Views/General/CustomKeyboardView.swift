@@ -12,44 +12,46 @@ struct CustomKeyboardView: View {
     
     @Binding var text: String // Bind the text to update the input field
 
-    var onDone: () -> Void // Closure to handle "Done" button
+    var onAC: () -> Void // Closure to handle "Clear" button
+    var onNext: () -> Void // Closure to handle "Next" button
+    var onDone: () -> Void // Closure to handle "Save" button
 
     let grid: [[String]] = [
         ["7", "8", "9", "⌫"], // Backspace
-        ["4", "5", "6", "AC"], // Reset
-        ["1", "2", "3", ""], // Done
-        ["000", "0", ".", "Done"] // Extra row
+        ["4", "5", "6", "Clear"], // Reset
+        ["1", "2", "3", "→"], // Done
+        ["000", "0", ".", "Save"] // Extra row
     ]
     
     func backgroundColor(key: String) -> Color {
-        key == "Done" ? Color(hex: "FFDC23") :
-        key == "⌫" || key == "AC" ? colorScheme == .dark ? Color(.systemFill) : Color(hex: "F0F0F5") :
+        key == "Save" ? Color(hex: "FFDC23") :
+        key == "⌫" || key == "Clear" || key == "→" ? colorScheme == .dark ? Color(.systemFill) : Color(hex: "F0F0F5") :
         Color(.systemBackground)
     }
     
     func foregroundColor(key: String) -> Color {
-        key == "Done" ? .black :
-        key == "⌫" || key == "AC" ? colorScheme == .dark ? .white : .black : .primary
+        key == "Save" ? .black :
+        key == "⌫" || key == "Clear" || key == "→" ? colorScheme == .dark ? .white : .black : .primary
     }
     
     func borderColor(key: String) -> Color {
-        key == "Done" ? .clear :
-        key == "⌫" || key == "AC" ? colorScheme == .dark ? Color(.systemFill) : Color(.systemGray5) :
+        key == "Save" ? .clear :
+        key == "⌫" || key == "Clear" || key == "→" ? colorScheme == .dark ? Color(.systemFill) : Color(.systemGray5) :
         colorScheme == .dark ? Color(.systemGray5) : .clear
     }
 
     var body: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: 10) {
             ForEach(grid, id: \.self) { row in
-                HStack(spacing: 12) {
+                HStack(spacing: 10) {
                     ForEach(row, id: \.self) { key in
                         Button(action: {
                             handleKeyPress(key)
                         }) {
                             Text(key)
-                                .font(.title2)
+                                .font(key == "⌫" ? .title : .title2)
                                 .bold()
-                                .frame(maxWidth: .infinity, maxHeight: 60)
+                                .frame(maxWidth: .infinity, maxHeight: 40)
                                 .background(backgroundColor(key: key))
                                 .foregroundColor(foregroundColor(key: key))
                                 .cornerRadius(8)
@@ -64,8 +66,8 @@ struct CustomKeyboardView: View {
             }
         }
         .padding(.horizontal, 15)
-        .padding(.bottom, 10)
-        .padding(.top, 5)
+        .padding(.bottom, 12)
+        .padding(.top, 7)
         .background(Color(.systemGray6))
     }
 
@@ -75,10 +77,13 @@ struct CustomKeyboardView: View {
             if !text.isEmpty {
                 text.removeLast()
             }
-        case "AC":
+        case "Clear":
             text = ""
-        case "Done":
+            onAC()
+        case "Save":
             onDone()
+        case "→":
+            onNext()
         case "000":
             text += "000"
         case ".":
@@ -93,7 +98,11 @@ struct CustomKeyboardView: View {
 
 
 #Preview {
-    CustomKeyboardView(text: .constant("0")) {
-        print("Done!")
-    }
+    CustomKeyboardView(text: .constant("0"), onAC: {
+        //
+    }, onNext: {
+        //
+    }, onDone: {
+        //
+    })
 }

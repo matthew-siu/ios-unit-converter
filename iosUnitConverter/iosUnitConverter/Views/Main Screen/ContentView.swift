@@ -11,8 +11,7 @@ import SwiftData
 struct ContentView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.modelContext) var context
-//    @Query(sort: \ConvertedItem.cts) private var history: [ConvertedItem]
-    @Query  var historyItems: [ConvertedItem]
+    @Query(sort: \ConvertedItem.cts, order: .reverse) var historyItems: [ConvertedItem]
     
     @State var measureRequest: String!
     @State var selectedText: String = ""
@@ -32,16 +31,17 @@ struct ContentView: View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 0) {
                 ScrollView {
-                    VStack(spacing: 24) {
+                    VStack(spacing: 18) {
                         ScrollView(.horizontal){
                             HStack(alignment: .center, spacing: 8){
                                 ForEach(vm.measurementTypes, id: \.id) { item in
                                     Button {
                                         self.selectMeasurement(new: item)
                                     } label: {
-                                        TabButton(icon: item.icon, label: item.name, isSelected: item.id ==  vm.selectedMeasurement.id)
+                                        TabButton(icon: item.icon, 
+                                                label: item.name, 
+                                                isSelected: item.id == vm.selectedMeasurement.id)
                                     }
-                                    
                                 }
                             }
                             .padding(.horizontal, 12)
@@ -94,7 +94,7 @@ struct ContentView: View {
                                     // input per textfield
                                     
                                     if vm.showPerTextfield{
-                                        TextField("", text: $vm.inputPerValue)
+                                        TextField("1", text: $vm.inputPerValue)
                                             .font(.system(size: 24))
                                             .padding(.horizontal, 0)
                                             .keyboardType(.decimalPad)
@@ -147,6 +147,7 @@ struct ContentView: View {
                                     }
                                     .onChange(of: vm.selectedInputUnit) { oldValue, newValue in
                                         self.vm.calculateConversion()
+                                        self.vm.unitChanged()
                                     }
                                 }
                                 
@@ -173,7 +174,7 @@ struct ContentView: View {
                                     
                                     // output per textfield
                                     if vm.showPerTextfield{
-                                        TextField("", text: $vm.outputPerValue)
+                                        TextField("1", text: $vm.outputPerValue)
                                             .font(.system(size: 24))
                                             .padding(.horizontal, 0)
                                             .keyboardType(.decimalPad)
@@ -227,6 +228,7 @@ struct ContentView: View {
                                         }
                                         .onChange(of: vm.selectedOutputUnit) { oldValue, newValue in
                                             self.vm.calculateConversion()
+                                            self.vm.unitChanged()
                                         }
                                         
                                         Button {
@@ -256,7 +258,7 @@ struct ContentView: View {
                         Divider()
                         
                         // History Section
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 5) {
                             HStack {
                                 Text("History")
                                     .font(.headline)
@@ -268,21 +270,30 @@ struct ContentView: View {
                                 }
                                 .foregroundColor(.red)
                             }
-                            .padding(.horizontal, 10)
                             
                             ForEach(historyItems) { item in
-                                VStack(alignment: .leading) {
-                                    Text("\(item.inputValue)/\(item.inputPerValue ?? "")\(item.inputUnit) = \(item.outputValue)\(item.outputPerValue ?? "") \(item.outputUnit)")
-                                        .font(.body)
-                                        .foregroundStyle(.black)
+                                VStack(alignment: .leading, spacing: 8){
+                                    HistoryItem(item: item)
+                                        .font(.system(size: 12))
+                                        .bold()
+                                        .frame(height: 20)
                                 }
                             }
-                            .onDelete { indices in
-                                for index in indices {
-                                    context.delete(historyItems[index])
-                                }
-                            }
+                            
+//                            ForEach(historyItems) { item in
+//                                VStack(alignment: .leading) {
+//                                    Text("\(item.display)")
+//                                        .font(.body)
+//                                        .foregroundStyle(.black)
+//                                }
+//                            }
+//                            .onDelete { indices in
+//                                for index in indices {
+//                                    context.delete(historyItems[index])
+//                                }
+//                            }
                         }
+                        .padding(.horizontal, 10)
                     }
                 }
                 .padding(.top, 5)
@@ -313,10 +324,21 @@ struct ContentView: View {
                                 vm.outputPerValue = newValue
                             }
                         }
-                    )) {
+                    ), onAC: {
+                        self.vm.resetInputs()
+                        self.selectedTextfield = .inputValue
+                    }, onNext: {
+                        if vm.isPriceMode{
+                            switch selectedTextfield{
+                            case .inputValue: selectedTextfield = .inputPerValue
+                            case .inputPerValue: selectedTextfield = .outputPerValue
+                            default: break
+                            }
+                        }
+                    }, onDone: {
                         self.saveConversion()
                         self.countAds()
-                    }
+                    })
                     
                     BannerAdView()
                         .frame(height: 50, alignment: .center)
@@ -383,19 +405,13 @@ struct ContentView: View {
         
         var body: some View {
             VStack {
-                Image(systemName: icon)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 20, height: 20)
-                    .cornerRadius(8)
-                    .foregroundStyle(isSelected ? .black : colorScheme == .dark ? .white : .black)
                     
                 Text(label)
                     .font(.caption)
                     .foregroundColor(isSelected ? .black : .primary)
             }
             .padding(.horizontal, 8)
-            .frame(height: 70)
+            .frame(height: 30)
             .frame(minWidth: 70)
             .background(isSelected ? Color(hex: "FFDC23") : Color(.systemBackground))
             .overlay(
@@ -403,6 +419,51 @@ struct ContentView: View {
                     .stroke(isSelected ? Color(hex: "E5B400") : Color(hex: "ECECEC"), lineWidth: 2)
             )
             .cornerRadius(8)
+        }
+    }
+    
+    struct HistoryItem: View {
+        
+        let item: ConvertedItem
+        
+        var body: some View {
+            HStack(spacing: 0){
+                let input = item.priceMode ? "$" + item.inputValue : item.inputValue
+                
+                Text(input)
+                    .foregroundStyle(.primary)
+                
+                if item.priceMode {
+                    Text(" / ")
+                        .foregroundStyle(.gray)
+                }
+                
+                if !item.inputPerValue.isEmpty || item.inputPerValue != "1" {
+                    Text(item.inputPerValue)
+                        .foregroundStyle(.gray)
+                }
+                
+                Text(item.inputUnit)
+                    .foregroundStyle(.gray)
+                
+                Text(" = ")
+                    .foregroundStyle(.gray)
+                
+                let output = item.priceMode ? "$" + item.outputValue : item.outputValue
+                Text(output)
+                    .foregroundStyle(.red)
+                
+                Text(" / ")
+                    .foregroundStyle(.gray)
+                
+                if !item.outputPerValue.isEmpty || item.outputPerValue != "1" {
+                    Text(item.outputPerValue)
+                        .foregroundStyle(.gray)
+                }
+                
+                Text(item.outputUnit)
+                    .foregroundStyle(.gray)
+            }
         }
     }
 }
@@ -418,10 +479,11 @@ extension ContentView {
             inputUnit: vm.selectedInputUnit.symbol,
             outputValue: vm.outputValue,
             outputPerValue: vm.outputPerValue,
-            outputUnit: vm.selectedOutputUnit.symbol
+            outputUnit: vm.selectedOutputUnit.symbol,
+            priceMode: vm.priceMode
         )
-        print("save \(newItem.measurementType): \(newItem.inputValue)/\(newItem.inputPerValue ?? "")\(newItem.inputUnit) -> \(newItem.outputValue)/\(newItem.outputPerValue ?? "")\(newItem.outputUnit)")
         if !newItem.inputValue.isEmpty && !newItem.outputValue.isEmpty{
+            print("save \(newItem.measurementType): \(newItem.inputValue)/\(newItem.inputPerValue)\(newItem.inputUnit) -> \(newItem.outputValue)/\(newItem.outputPerValue)\(newItem.outputUnit)")
             context.insert(newItem)
         }
         
@@ -453,14 +515,17 @@ extension ContentView {
 //            print("go to child \(title)")
 //        }
     }
+    
 }
 
 #Preview {
     Group {
 //        ContentView()
 //            .environment(\.colorScheme, .light)
-        
         ContentView()
+            .modifier(VersionControlModifier())
+            .modelContainer(for: ConvertedItem.self)
+//        ContentView()
 //            .environment(\.colorScheme, .dark)
     }
 }

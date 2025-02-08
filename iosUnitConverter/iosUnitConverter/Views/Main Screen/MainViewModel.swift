@@ -11,9 +11,9 @@ class MainViewModel: ObservableObject{
     
     @Published var selectedMeasurement: MeasurementType
     @Published var inputValue: String = ""
-    @Published var inputPerValue: String = "1"
+    @Published var inputPerValue: String = ""
     @Published var outputValue: String = "0"
-    @Published var outputPerValue: String = "1"
+    @Published var outputPerValue: String = ""
     @Published var selectedInputUnit: Dimension
     @Published var selectedOutputUnit: Dimension
     
@@ -40,21 +40,79 @@ class MainViewModel: ObservableObject{
         !isEggs && priceMode
     }
     
+    // Storage keys
+    private let kLastMeasurementType = "lastMeasurementType"
+    private let kPriceMode = "priceMode"
+    
+    private func makeUnitKey(type: String, isInput: Bool) -> String {
+        return "\(type)_\(isInput ? "input" : "output")"
+    }
+    
     init() {
         selectedMeasurement = measurementTypes.first!
         selectedInputUnit = measurementTypes.first!.defaultInput
         selectedOutputUnit = measurementTypes.first!.defaultOutput
         
-        let defaultType = measurementTypes.first(where: {$0 is Weight})!
-        self.selectMeasurement(new: defaultType)
+        // Load saved settings
+        loadSavedSettings()
     }
     
-    func selectMeasurement(new: MeasurementType){
+    private func loadSavedSettings() {
+        // Load last measurement type
+        if let lastType = LocalStorage.getString(kLastMeasurementType),
+           let savedType = measurementTypes.first(where: { $0.name == lastType }) {
+            print("loadSavedSettings: load \(savedType.name)")
+            selectedMeasurement = savedType
+            
+            // Load saved units for this type
+            if let inputSymbol = LocalStorage.getString(makeUnitKey(type: lastType, isInput: true)),
+               let savedInputUnit = savedType.units.first(where: { $0.symbol == inputSymbol }) {
+                print("loadSavedSettings: load \(savedInputUnit.symbol)")
+                selectedInputUnit = savedInputUnit
+            } else {
+                selectedInputUnit = savedType.defaultInput
+            }
+            
+            if let outputSymbol = LocalStorage.getString(makeUnitKey(type: lastType, isInput: false)),
+               let savedOutputUnit = savedType.units.first(where: { $0.symbol == outputSymbol }) {
+                print("loadSavedSettings: load \(savedOutputUnit.symbol)")
+                selectedOutputUnit = savedOutputUnit
+            } else {
+                selectedOutputUnit = savedType.defaultOutput
+            }
+        }else{
+            print("loadSavedSettings: use default")
+            let defaultType = measurementTypes.first(where: {$0 is Weight})!
+            self.selectMeasurement(new: defaultType)
+        }
+        
+        // Load price mode
+        priceMode = LocalStorage.getBool(kPriceMode)
+    }
+    
+    func selectMeasurement(new: MeasurementType) {
         selectedMeasurement = new
-        selectedInputUnit = new.defaultInput
-        selectedOutputUnit = new.defaultOutput
-        inputPerValue = "1"
-        outputPerValue = "1"
+        
+        // Load saved units for this type if they exist
+        if let inputSymbol = LocalStorage.getString(makeUnitKey(type: new.name, isInput: true)),
+           let savedInputUnit = new.units.first(where: { $0.symbol == inputSymbol }) {
+            selectedInputUnit = savedInputUnit
+        } else {
+            selectedInputUnit = new.defaultInput
+        }
+        
+        if let outputSymbol = LocalStorage.getString(makeUnitKey(type: new.name, isInput: false)),
+           let savedOutputUnit = new.units.first(where: { $0.symbol == outputSymbol }) {
+            selectedOutputUnit = savedOutputUnit
+        } else {
+            selectedOutputUnit = new.defaultOutput
+        }
+        
+        // Save the selected measurement type
+        LocalStorage.save(kLastMeasurementType, new.name)
+        
+        inputPerValue = ""
+        outputPerValue = ""
     }
     
     func selectMeasurement(deeplink: String){
@@ -73,13 +131,21 @@ class MainViewModel: ObservableObject{
         selectedOutputUnit = tmp
     }
     
-    func togglePriceMode(_ enabled: Bool? = nil){
-        if let enabled = enabled{
+    func togglePriceMode(_ enabled: Bool? = nil) {
+        if let enabled = enabled {
             self.priceMode = enabled
-        }else{
+        } else {
             self.priceMode.toggle()
         }
+        // Save price mode state
+        LocalStorage.save(kPriceMode, self.priceMode)
         calculateConversion()
+    }
+    
+    func resetInputs(){
+        self.inputValue = ""
+        self.inputPerValue = ""
+        self.outputPerValue = ""
     }
     
     func calculateConversion() {
@@ -105,7 +171,13 @@ class MainViewModel: ObservableObject{
     }
     
     func calculatePrice(){
-        guard let input = Double(inputValue), let inputPer = Double(inputPerValue), let outputPer = Double(outputPerValue) else {
+        let tmpInputPer = Double(inputPerValue)
+        let tmpOutputPer = Double(outputPerValue)
+        
+        let inputPer = tmpInputPer == 0 ? 1 : tmpInputPer ?? 1
+        let outputPer = tmpOutputPer == 0 ? 1 : tmpOutputPer ?? 1
+        
+        guard let input = Double(inputValue) else {
             outputValue = "0"
             return
         }
@@ -113,12 +185,27 @@ class MainViewModel: ObservableObject{
         var convertedValue: Double = 0
         convertedValue = selectedMeasurement.convert(value: input, inputPer: inputPer, outputPer: outputPer, from: selectedInputUnit, to: selectedOutputUnit)
         
-        if convertedValue > 0.01 {
+        if convertedValue > 1 {
             outputValue = String(format: "%.2f", convertedValue) // 2 decimal places
         } else {
             outputValue = String(format: "%.3g", convertedValue) // 3 significant figures
         }
         print("calculatePrice \(inputValue)\(selectedInputUnit.symbol) = \(outputValue)\(selectedOutputUnit.symbol)")
+    }
+    
+    // Add unit change handler
+    func unitChanged() {
+        // Save current units
+        LocalStorage.save(
+            makeUnitKey(type: selectedMeasurement.name, isInput: true),
+            selectedInputUnit.symbol
+        )
+        LocalStorage.save(
+            makeUnitKey(type: selectedMeasurement.name, isInput: false),
+            selectedOutputUnit.symbol
+        )
+        print("saved \(selectedMeasurement.name) \(selectedInputUnit.symbol) \(selectedOutputUnit.symbol)")
+//        calculateConversion()
     }
 }
 
