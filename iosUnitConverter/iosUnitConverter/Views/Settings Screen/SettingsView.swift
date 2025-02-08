@@ -13,15 +13,26 @@ struct SettingsView: View {
     @StateObject var viewModel = SettingsViewModel()
     
     @State var showPricePopup: Bool = false
+    @State var showInstallWidget: Bool = false
+    @State var showInstallControl: Bool = false
     
     var body: some View {
         VStack {
             // Main List
             List {
                 Section {
-//                    SettingsRow(title: "Install Widget", subtitle: "Add for quick access") {
-//                        viewModel.installWidget()
-//                    }
+                    SettingsRow(title: "Install Widget", icon: "installWidgetIcon", subtitle: "Shortcut to unit conversion") {
+                        self.showInstallWidget = true
+                    }
+                }
+                
+                Section {
+                    SettingsRow(title: "Add Control Button", icon: "installControlIcon", subtitle: "Shortcut over Control Panel") {
+                        self.showInstallControl = true
+                    }
+                }
+                
+                Section {
                     
                     SettingsRow(title: "Gift us a coffee", subtitle: "Remove annoying Ads") {
 //                        DispatchQueue.main.async {
@@ -68,6 +79,12 @@ struct SettingsView: View {
         }
         .navigationBarTitle("Menu", displayMode: .inline)
         .priceScreenPopup(isPresented: $showPricePopup)
+        .navigationDestination(isPresented: $showInstallWidget, destination: {
+            InstallWidgetTutorialView()
+        })
+        .navigationDestination(isPresented: $showInstallControl, destination: {
+            InstallControlTutorialView()
+        })
     }
     
     func openURL(){
@@ -79,12 +96,21 @@ struct SettingsView: View {
 
 struct SettingsRow: View {
     var title: String
+    var icon: String? = nil
     var subtitle: String
     var action: () -> Void
     
     var body: some View {
         Button(action: action) {
-            HStack {
+            HStack(spacing: 16) {
+                if let icon = icon{
+                    Image(icon)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 60, height: 60)
+                        .cornerRadius(13)
+                }
+                
                 VStack(alignment: .leading) {
                     Text(title)
                         .font(.headline)

@@ -255,8 +255,6 @@ struct ContentView: View {
                         }
                         .padding(.horizontal, 12)
                         
-                        Divider()
-                        
                         // History Section
                         VStack(alignment: .leading, spacing: 5) {
                             HStack {
@@ -264,12 +262,12 @@ struct ContentView: View {
                                     .font(.headline)
                                 Spacer()
                                 Button("Clear All") {
-                                    for item in historyItems where item.measurementType == vm.selectedMeasurement.name {
-                                        context.delete(item)
-                                    }
+                                    self.deleteAllHistoryItems()
                                 }
-                                .foregroundColor(.red)
+                                .foregroundColor(Color(hex: "39B97B"))
                             }
+                            
+                            Divider()
                             
                             ForEach(historyItems) { item in
                                 VStack(alignment: .leading, spacing: 8){
@@ -279,19 +277,6 @@ struct ContentView: View {
                                         .frame(height: 20)
                                 }
                             }
-                            
-//                            ForEach(historyItems) { item in
-//                                VStack(alignment: .leading) {
-//                                    Text("\(item.display)")
-//                                        .font(.body)
-//                                        .foregroundStyle(.black)
-//                                }
-//                            }
-//                            .onDelete { indices in
-//                                for index in indices {
-//                                    context.delete(historyItems[index])
-//                                }
-//                            }
                         }
                         .padding(.horizontal, 10)
                     }
@@ -489,6 +474,20 @@ extension ContentView {
         
     }
     
+    func deleteAllHistoryItems(){
+        // Delete all items from the context
+        for item in historyItems {
+            context.delete(item)
+        }
+        
+        // Try to save the context
+        do {
+            try context.save()
+        } catch {
+            print("Error deleting history items: \(error)")
+        }
+    }
+    
     private func selectMeasurement(new: MeasurementType) {
         withAnimation {
             self.vm.selectMeasurement(new: new)
@@ -500,7 +499,7 @@ extension ContentView {
             return
         }
         self.adsActionCount += 1
-        if self.adsActionCount % 5 == 0{
+        if self.adsActionCount % 3 == 0{
             self.isShowingInterstitialAd = true
         }
     }
